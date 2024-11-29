@@ -9,13 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    fscene.cpp \
     main.cpp \
     mainwindow.cpp \
-    nivel.cpp
+    personaje.cpp \
+    tscene.cpp
 
 HEADERS += \
+    fscene.h \
     mainwindow.h \
-    nivel.h
+    personaje.h \
+    tscene.h
 
 FORMS += \
     mainwindow.ui
@@ -24,3 +28,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+  sprites/sprites.qrc

@@ -1,77 +1,103 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QGraphicsPixmapItem>
-#include <QPixmap>
 
+#include "fscene.h"
+#include "tscene.h"
+#include <QScreen>
+#include <QPushButton>
+#include <QGraphicsProxyWidget>
+#include <QDebug>
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow), First_Scene(nullptr), Two_Scene(nullptr)
 {
     ui->setupUi(this);
-    scene = new QGraphicsScene();
-    ui->graphicsView->setScene(scene);
-    QImage fondo("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/fondo.png");
-    ui -> graphicsView -> setBackgroundBrush(fondo);
-    scene -> setSceneRect(1920,1080,5000,200);
-    ui->graphicsView->scale(0.36,1.2);
+    graphicsView = new QGraphicsView(this);
+    setCentralWidget(graphicsView);
 
-    QPixmap mov1("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento1.png");
-    /*QPixmap mov2("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento2.png");
-    QPixmap mov3("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento3.png");
-    QPixmap mov4("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento4.png");
-    QPixmap mov5("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento5.png");
-    QPixmap mov6("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento6.png");
-    */
-    bart = new QGraphicsPixmapItem();
-    scene -> addItem(bart);
-    bart -> setPixmap(mov1);
-    bart -> setScale(2.3);
-    bart -> setPos(2000,1300);
+    QScreen * screen = QGuiApplication :: primaryScreen();
+    QRect screenGeometry = screen->geometry();
+    int screenWidth = screenGeometry.width();
+    int screenHeight = screenGeometry.height();
 
-    mov= new QTimer(this);
-    mov->start(80);
-    connect(mov,&QTimer::timeout,this,&MainWindow::runPlayer);
+    int frameHeight = frameGeometry().height() - geometry().height();
+
+    int viewWidth = screenWidth;
+    int viewHeight = screenHeight - frameHeight;
+
+    graphicsView->setFixedSize(viewWidth, viewHeight);
+
+    graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    menuButton = new QPushButton(this);
+    QString buttonStyleM = "QPushButton {"
+                           "background-image: url(:/START.png);"
+                           "background-repeat: no-repeat;"
+                           "background-position: center;"
+                           "border: none;"
+                           "width: 793px;"
+                           "height: 250px;"
+                           "}";
+
+    menuButton->setStyleSheet(buttonStyleM);
+    connect(menuButton, &QPushButton::clicked, this, &MainWindow::onLevelSelected);
+
+    int buttonWidth = menuButton->width();
+    int buttonHeight = menuButton->height();
+    int buttonX = ((viewWidth - buttonWidth) / 2) - 396.5;
+    int buttonY = ((viewHeight - buttonHeight) / 2) - 125;
+    menuButton->setGeometry(0,0,793,250);
+    menuButton->move(buttonX, buttonY);
+
+    titulo = new QLabel("THE SIMPSONS", this);
+    titulo->setStyleSheet("QLabel { color: yellow; font-size: 200px; }");
+    titulo->adjustSize();
+    int labelWidth = 396.5-(titulo->width()/2);
+    titulo->move(menuButton->x()+labelWidth, menuButton->y() - 250);
+
+    Cred = new QLabel("Juego proyecto final info 2 \n- Creado por Tomas Restrepo Saldarriaga", this);
+    Cred->setStyleSheet("QLabel { color: black; font-size: 25px; }");
+    Cred->adjustSize();
+    Cred->move(20, 950);
+
+    initialScene = new QGraphicsScene(this);
+    initialScene->setSceneRect(2, 2, viewWidth, viewHeight);
+    graphicsView->setScene(initialScene);
+    initialScene->setBackgroundBrush(QBrush(QPixmap(":/simpsons.jpg").scaled(viewWidth, viewHeight)));
+
 }
 
+
+
+void MainWindow::onLevelSelected(int level)
+{
+    qDebug() << "nivel seleccionado:" << level;
+
+    if (First_Scene) {
+        delete First_Scene;
+        First_Scene = nullptr;
+    }
+    if (Two_Scene) {
+        delete Two_Scene;
+        Two_Scene = nullptr;
+    }
+
+    if (level == 0) {
+        qDebug() << "Crea First_Scene";
+        First_Scene = new Fscene(this);
+        graphicsView->setScene(First_Scene);
+
+
+    }/* else if (level == 2) {
+        Two_Scene = new twoscene(this);
+        graphicsView->setScene(Two_Scene);
+        Cred->hide();
+
+    }
+*/
+}
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::keyPressEvent(QKeyEvent* e){
-    QPixmap mov1("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento1.png");
-    QPixmap mov2("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento2.png");
-    QPixmap mov3("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento3.png");
-    QPixmap mov4("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento4.png");
-    QPixmap mov5("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento5.png");
-    QPixmap mov6("C:/Users/stoma/OneDrive/Escritorio/Proyecto Final/ProyectoFinal/Sprites/Sprite Movimiento/Movimiento6.png");
-    if(e->key()==Qt::Key_D){
-        if(contador==1){
-            bart -> setPixmap(mov1);
-        }
-        else if(contador==2){
-            bart -> setPixmap(mov2);
-        }
-        else if(contador==3){
-            bart -> setPixmap(mov3);
-        }
-        else if(contador==4){
-            bart -> setPixmap(mov4);
-        }
-        else if(contador==5){
-            bart -> setPixmap(mov5);
-        }
-        else if(contador==6){
-            bart -> setPixmap(mov6);
-        }
-        bart -> setPos(bart->pos().x()+15,bart->pos().y());
-    }
-}
-
-void MainWindow::runPlayer(){
-    contador+=1;
-    if(contador>6){
-        contador=1;
-    }
-
-}
