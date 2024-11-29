@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    int posX = -70;
     ~MainWindow();
 
 
@@ -32,7 +33,18 @@ private:
     void keyPressEvent(QKeyEvent *e);
     //void keyReleaseEvent(QKeyEvent *e);
     QTimer* mov;
-    int contador=0;
+    QTimer* agachado;
+    QTimer* jump;
+    int lugar_saltoX = 0;
+    int lugar_saltoY = 0;
+    int distancia = 0;
+    bool tocar_arriba = false;
+    bool subir = true;
+    bool salto = true;
+    bool colision=false;
+    int contador=0,contadorAgachado=0;
     void runPlayer();
+    void crouchingPlayer();
+    void jumpPlayer();
 };
 #endif // MAINWINDOW_H
