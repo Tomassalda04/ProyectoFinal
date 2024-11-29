@@ -2,12 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QGraphicsScene>
+#include "fscene.h"
+#include "tscene.h"
+#include <QMainWindow>
 #include <QGraphicsView>
-#include <QGraphicsPixmapItem>
-#include <QPixmap>
-#include <QKeyEvent>
-#include <QTimer>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,32 +20,24 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+
+
+
 public:
     MainWindow(QWidget *parent = nullptr);
-    int posX = -70;
     ~MainWindow();
-
+    void onLevelSelected(int level);
 
 private:
-
     Ui::MainWindow *ui;
-    QGraphicsPixmapItem* bart;
-    QGraphicsScene *scene;
-    void keyPressEvent(QKeyEvent *e);
-    //void keyReleaseEvent(QKeyEvent *e);
-    QTimer* mov;
-    QTimer* agachado;
-    QTimer* jump;
-    int lugar_saltoX = 0;
-    int lugar_saltoY = 0;
-    int distancia = 0;
-    bool tocar_arriba = false;
-    bool subir = true;
-    bool salto = true;
-    bool colision=false;
-    int contador=0,contadorAgachado=0;
-    void runPlayer();
-    void crouchingPlayer();
-    void jumpPlayer();
+    Fscene *First_Scene;
+    Tscene *Two_Scene;
+    QGraphicsScene *initialScene;
+    QGraphicsView *graphicsView;
+    QPushButton *menuButton;
+    QLabel *titulo;
+    QLabel *Cred;
+
+
 };
 #endif // MAINWINDOW_H

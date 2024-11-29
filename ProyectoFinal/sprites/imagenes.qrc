@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Fondo n2.jpeg.jpg</file>
+        <file>fondo.png</file>
+        <file>Homero D1.png</file>
+        <file>Homero D2.png</file>
+        <file>Homero D3.png</file>
+        <file>Homero D4.png</file>
+        <file>Homero D5.png</file>
+        <file>Homero D6.png</file>
+        <file>Homero D7.png</file>
+        <file>Homero D8.png</file>
+        <file>Homero I3.png</file>
+        <file>Homero I4.png</file>
+        <file>Homero I5.png</file>
+        <file>Homero I6.png</file>
+        <file>Homero I7.png</file>
+        <file>Homero I8.png</file>
+        <file>imagenes.qrc</file>
+        <file>Movimiento1.png</file>
+        <file>Movimiento2.png</file>
+        <file>Movimiento3.png</file>
+        <file>Movimiento4.png</file>
+        <file>Movimiento5.png</file>
+        <file>Movimiento6.png</file>
+        <file>salto1.png</file>
+        <file>salto2.png</file>
+        <file>salto3.png</file>
+        <file>simpsons.jpg</file>
+        <file>START.png</file>
+    </qresource>
+    <qresource prefix="/new/prefix1"/>
+</RCC>

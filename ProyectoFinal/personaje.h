@@ -1,6 +1,10 @@
 #ifndef PERSONAJE_H
 #define PERSONAJE_H
-#include "qobject.h"
-#include "QGraphicsPixmapItem"
+
+class personaje
+{
+public:
+    personaje();
+};
 
 #endif // PERSONAJE_H

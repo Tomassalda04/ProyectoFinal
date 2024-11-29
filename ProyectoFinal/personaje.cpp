@@ -1,4 +1,3 @@
-#include "Personaje.h"
-#include "QKeyEvent"
+#include "personaje.h"
 
-
+personaje::personaje() {}
