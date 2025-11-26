@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Sprites/SpritesNivel1/FondoNivel1.png</file>
+        <file>Sprites/SpritesNivel1/Neo Geo _ NGCD - Shock Troopers_ 2nd Squad - Enemies - Elite Soldier.png</file>
+        <file>Sprites/SpritesNivel1/Soldado.png</file>
+        <file>Sprites/SpritesNivel2/FondoNivel2.png</file>
+        <file>Sprites/SpritesNivel2/PC _ Computer - Klik &amp; Play - Graphic Libraries - Spaceships &amp; Planets.png</file>
+        <file>Sprites/SpritesNivel2/PC _ Computer - Out There Somewhere - Miscellaneous - Spaceship Minigame.png</file>
+        <file>Sprites/SpritesNivel3/FondoNivel3.png</file>
+        <file>Sprites/SpritesNivel3/MiraNivel3.png</file>
+        <file>Sprites/SpritesNivel3/MS-DOS - Blake Stone_ Planet Strike - Enemies - Alien Protector.png</file>
+        <file>Sprites/Fondo/fondo.png</file>
+    </qresource>
+</RCC>
