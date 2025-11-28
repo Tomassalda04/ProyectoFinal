@@ -1,0 +1,10 @@
+release/enemigo.o
+release/main.o
+release/mainwindow.o
+release/nivel.o
+release/obstaculo.o
+release/personaje.o
+release/qrc_Sprites.o
+release/moc_enemigo.o
+release/moc_mainwindow.o
+release/moc_personaje.o
