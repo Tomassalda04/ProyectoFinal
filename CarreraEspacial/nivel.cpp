@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QDebug>
 
+static const int VIEW_W = 1024;
+static const int VIEW_H = 572;
 
 Nivel::Nivel(int numeroNivel, QObject *parent)
     : QGraphicsScene(parent)
@@ -29,13 +31,7 @@ Nivel::Nivel(int numeroNivel, QObject *parent)
     }
 }
 
-<<<<<<< Updated upstream
-void Nivel::crearNivel1()
-{
-    QPixmap fondo(":/Sprites/SpritesNivel1/FondoNivel1.png");
-    addPixmap(fondo)->setPos(0, 0);
 
-=======
 void Nivel::crearNivel1(){
 
     QPixmap fondo(":/Sprites/SpritesNivel1/fondo1.jpg");
@@ -70,6 +66,9 @@ void Nivel::crearNivel1(){
     addItem(obs2);
     addItem(obs3);
     addItem(obs4);
+    addItem(obs5);
+    addItem(obs6);
+    addItem(obs7);
 
     m_personajePrueba = new Enemigo();
     addItem(m_personajePrueba);
@@ -79,8 +78,6 @@ void Nivel::crearNivel1(){
 
     m_personajePrueba->setPos(100, 400);
 
-
->>>>>>> Stashed changes
 }
 
 
