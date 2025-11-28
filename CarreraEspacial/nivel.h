@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 
+#include "personaje.h"
+
 class Nivel : public QGraphicsScene
 {
 public:
@@ -21,9 +23,11 @@ private:
     void crearNivel2();
     void crearNivel3();
 
-    QGraphicsPixmapItem *m_cohete = nullptr;  // solo se usa en nivel 2
+    // solo se usa en nivel 2
+    QGraphicsPixmapItem *m_cohete = nullptr;
+
+    // Personaje de prueba que se mueve en el nivel 1
+    Personaje *m_personajePrueba = nullptr;
 };
 
 #endif // NIVEL_H
-
-

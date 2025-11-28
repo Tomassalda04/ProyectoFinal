@@ -1,27 +1,43 @@
 // nivel.cpp
 #include "nivel.h"
+#include "enemigo.h"
+#include "obstaculo.h"
+
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
+#include <QTimer>
+#include <QDebug>
 
 static const int VIEW_W = 1024;
 static const int VIEW_H = 572;
 
 Nivel::Nivel(int numeroNivel, QObject *parent)
-    : QGraphicsScene(parent),
-    m_numeroNivel(numeroNivel)
+    : QGraphicsScene(parent)
+    , m_numeroNivel(numeroNivel)
 {
+    setSceneRect(0, 0, VIEW_W, VIEW_H);
+
     switch (m_numeroNivel) {
-    case 1: crearNivel1(); break;
-    case 2: crearNivel2(); break;
-    case 3: crearNivel3(); break;
-    default: crearNivel1(); break;
+    case 1:
+        crearNivel1();
+        break;
+    case 2:
+        crearNivel2();
+        break;
+    case 3:
+        crearNivel3();
+        break;
+    default:
+        crearNivel1();
+        break;
     }
 }
 
-// ───────── NIVEL 1: fondo estático ─────────
+// ───────── NIVEL 1: fondo + obstáculos + enemigo ─────────
 void Nivel::crearNivel1()
 {
-    QPixmap fondo(":/Sprites/SpritesNivel1/FondoNivel1.png");
+    // Usamos el fondo del nivel 1 del branch main
+    QPixmap fondo(":/Sprites/SpritesNivel1/fondo1.jpg");
 
     setSceneRect(0, 0, VIEW_W, VIEW_H);
 
@@ -30,9 +46,42 @@ void Nivel::crearNivel1()
             VIEW_W, VIEW_H,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation
-            );
+        );
         addPixmap(fondoEscalado)->setPos(0, 0);
     }
+
+    // Obstáculos (de main)
+    Obstaculo *obs1 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs1.png");
+    Obstaculo *obs2 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs2.png");
+    Obstaculo *obs3 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs3.png");
+    Obstaculo *obs4 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png");
+    Obstaculo *obs5 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs5.png");
+    Obstaculo *obs6 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs6.png");
+    Obstaculo *obs7 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs7.png");
+
+    obs1->setPos(300, 380);
+    obs2->setPos(600, 380);
+    obs3->setPos(900, 2);
+    obs4->setPos(550, 350);
+    obs5->setPos(450, 2);
+    obs6->setPos(150, 35);
+    obs7->setPos(50, 450);
+
+    addItem(obs1);
+    addItem(obs2);
+    addItem(obs3);
+    addItem(obs4);
+    addItem(obs5);
+    addItem(obs6);
+    addItem(obs7);
+
+    // Enemigo de prueba
+    m_personajePrueba = new Enemigo();
+    addItem(m_personajePrueba);
+
+    QPixmap sprite(":/Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_abajo/mov1.png");
+    m_personajePrueba->setPixmap(sprite);
+    m_personajePrueba->setPos(100, 400);
 }
 
 // ───────── NIVEL 2: fondo largo + cohete ─────────
@@ -70,7 +119,7 @@ void Nivel::crearNivel2()
         altoDeseado,
         Qt::KeepAspectRatio,
         Qt::SmoothTransformation
-        );
+    );
 
     m_cohete = addPixmap(spriteCohete);
 
@@ -80,7 +129,6 @@ void Nivel::crearNivel2()
                      - m_cohete->boundingRect().height() / 2.0;
 
     m_cohete->setPos(xInicial, yInicial);
-    // --------------------------
 }
 
 // ───────── NIVEL 3: fondo estático ─────────
@@ -95,7 +143,7 @@ void Nivel::crearNivel3()
             VIEW_W, VIEW_H,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation
-            );
+        );
         addPixmap(fondoEscalado)->setPos(0, 0);
     }
 }
@@ -125,3 +173,4 @@ void Nivel::moverCohete(int dx, int dy)
 
     m_cohete->setPos(pos);
 }
+
