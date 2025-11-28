@@ -12,6 +12,10 @@ class Nivel : public QGraphicsScene
 public:
     explicit Nivel(int numeroNivel, QObject *parent = nullptr);
 
+    // Acceso al cohete y movimiento (para nivel 2)
+    QGraphicsPixmapItem *cohete() const { return m_cohete; }
+    void moverCohete(int dx, int dy);   // dx, dy: movimiento en X e Y
+
 private:
     int m_numeroNivel;
 
@@ -19,7 +23,10 @@ private:
     void crearNivel2();
     void crearNivel3();
 
-    // Personaje de prueba que se mueve con la ecuación de movimiento
+    // solo se usa en nivel 2
+    QGraphicsPixmapItem *m_cohete = nullptr;
+
+    // Personaje de prueba que se mueve en el nivel 1
     Personaje *m_personajePrueba = nullptr;
 };
 
