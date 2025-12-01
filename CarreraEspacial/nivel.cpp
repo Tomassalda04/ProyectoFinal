@@ -1,95 +1,131 @@
-// nivel.cpp
 #include "nivel.h"
 #include "enemigo.h"
 #include <QGraphicsPixmapItem>
 #include "obstaculo.h"
+#include "jugador.h"
 #include <QTimer>
 #include <QDebug>
-
-static const int VIEW_W = 1024;
-static const int VIEW_H = 572;
-
-Nivel::Nivel(int numeroNivel, QObject *parent)
-    : QGraphicsScene(parent)
-    , m_numeroNivel(numeroNivel)
-{
-    setSceneRect(0, 0, 1024, 572);
-
-    switch (m_numeroNivel) {
-    case 1:
-        crearNivel1();
-        break;
-    case 2:
-        crearNivel2();
-        break;
-    case 3:
-        crearNivel3();
-        break;
-    default:
-        crearNivel1();
-        break;
+static const int VIEW_W=1024;
+static const int VIEW_H=572;
+Nivel::Nivel(int numeroNivel,QObject *parent)
+    :QGraphicsScene(parent),m_numeroNivel(numeroNivel){
+    setSceneRect(0,0,1024,572);
+    switch(m_numeroNivel){
+    case 1:crearNivel1();break;
+    case 2:crearNivel2();break;
+    case 3:crearNivel3();break;
+    default:crearNivel1();break;
     }
 }
-
-
 void Nivel::crearNivel1(){
-
     QPixmap fondo(":/Sprites/SpritesNivel1/fondo1.jpg");
-
-    setSceneRect(0, 0, VIEW_W, VIEW_H);
-
-    QPixmap fondoEscalado = fondo.scaled(
-        VIEW_W, VIEW_H,
-        Qt::IgnoreAspectRatio,
-        Qt::SmoothTransformation
-        );
-
-    addPixmap(fondoEscalado)->setPos(0, 0);
-
-    Obstaculo *obs1 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs1.png");
-    Obstaculo *obs2 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs2.png");
-    Obstaculo *obs3 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs3.png");
-    Obstaculo *obs4 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png");
-    Obstaculo *obs5 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs5.png");
-    Obstaculo *obs6 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs6.png");
-    Obstaculo *obs7 = new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs7.png");
-
-    obs1->setPos(300, 380);
-    obs2->setPos(600, 380);
-    obs3->setPos(900, 2);
-    obs4->setPos(550,350);
-    obs5->setPos(450,2);
-    obs6->setPos(150,35);
-    obs7->setPos(50,450);
-
-    addItem(obs1);
-    addItem(obs2);
-    addItem(obs3);
-    addItem(obs4);
-    addItem(obs5);
-    addItem(obs6);
-    addItem(obs7);
-
-    m_personajePrueba = new Enemigo();
-    addItem(m_personajePrueba);
-
-    QPixmap sprite(":/Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_abajo/mov1.png");
-    m_personajePrueba->setPixmap(sprite);
-
-    m_personajePrueba->setPos(100, 400);
-
+    setSceneRect(0,0,VIEW_W,VIEW_H);
+    QPixmap fondoEscalado=fondo.scaled(VIEW_W,VIEW_H,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+    addPixmap(fondoEscalado)->setPos(0,0);
+    QVector<Obstaculo*> obstaculos;
+    obstaculos<<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs1.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs3.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs5.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs3.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs4.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs2.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs5.png")
+               <<new Obstaculo(":/Sprites/SpritesNivel1/Obstaculos/Obs5.png");
+    const QVector<QPointF> posicionesObstaculos={
+        {430,190},{100,400},{400,420},
+        {0,100},{690,220},{125,100},
+        {0,400},{380,600},{890,390},{600,420},{850,0}
+    };
+    for(int i=0;i<obstaculos.size()&&i<posicionesObstaculos.size();++i){
+        obstaculos[i]->setPos(posicionesObstaculos[i]);
+        addItem(obstaculos[i]);
+    }
+    QVector<Obstaculo*> cohetes;
+    cohetes<<new Obstaculo(":/Sprites/SpritesNivel1/Cohete/Coh1.png")
+            <<new Obstaculo(":/Sprites/SpritesNivel1/Cohete/Coh2.png")
+            <<new Obstaculo(":/Sprites/SpritesNivel1/Cohete/Coh3.png")
+            <<new Obstaculo(":/Sprites/SpritesNivel1/Cohete/Coh4.png");
+    const QVector<QPointF> posicionesCohetes={
+        {20,50},{950,490},{510,490},{950,50}
+    };
+    m_cohetes.clear();
+    for(int i=0;i<cohetes.size()&&i<posicionesCohetes.size();++i){
+        auto c=cohetes[i];
+        c->setPos(posicionesCohetes[i]);
+        c->setData(0,"cohete");
+        addItem(c);
+        m_cohetes.push_back(c);
+    }
+    m_cohetesRecolectados=0;
+    m_cohetesTotales=m_cohetes.size();
+    m_enemigo=new Enemigo();
+    addItem(m_enemigo);
+    m_enemigo->setPos(100,300);
+    m_jugador=new Jugador();
+    addItem(m_jugador);
+    m_jugador->setPos(500,100);
+    m_jugador->setFocus();
+    m_enemigo->setObjetivo(m_jugador);
+    connect(m_enemigo,&Enemigo::jugadorAlcanzado,this,&Nivel::onJugadorAtrapado);
+    connect(m_jugador,&Jugador::coheteRecolectado,this,&Nivel::manejarCoheteRecolectado);
+    m_segundosRestantes=40;
+    if(!m_timerNivel){
+        m_timerNivel=new QTimer(this);
+        connect(m_timerNivel,&QTimer::timeout,this,&Nivel::actualizarCuentaAtras);
+    }
+    m_timerNivel->start(1000);
+    if(!m_textoTiempo){
+        m_textoTiempo=addText("");
+        m_textoTiempo->setDefaultTextColor(Qt::white);
+        m_textoTiempo->setPos(10,10);
+    }
+    if(!m_textoCohetes){
+        m_textoCohetes=addText("");
+        m_textoCohetes->setDefaultTextColor(Qt::white);
+        m_textoCohetes->setPos(10,30);
+    }
+    m_textoTiempo->setPlainText(QString("Tiempo: %1").arg(m_segundosRestantes));
+    m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2").arg(m_cohetesRecolectados).arg(m_cohetesTotales));
 }
-
-
-void Nivel::crearNivel2()
-{
+void Nivel::crearNivel2(){
     QPixmap fondo(":/Sprites/SpritesNivel2/FondoNivel2.png");
-    addPixmap(fondo)->setPos(0, 0);
+    addPixmap(fondo)->setPos(0,0);
 }
-
-void Nivel::crearNivel3()
-{
+void Nivel::crearNivel3(){
     QPixmap fondo(":/Sprites/SpritesNivel3/FondoNivel3.png");
-    addPixmap(fondo)->setPos(0, 0);
-
+    addPixmap(fondo)->setPos(0,0);
+}
+void Nivel::actualizarCuentaAtras(){
+    --m_segundosRestantes;
+    if(m_textoTiempo)
+        m_textoTiempo->setPlainText(QString("Tiempo: %1").arg(m_segundosRestantes));
+    if(m_segundosRestantes<=0){
+        if(m_timerNivel)
+            m_timerNivel->stop();
+        emit nivelFallado(m_numeroNivel);
+    }
+}
+void Nivel::manejarCoheteRecolectado(QGraphicsItem *cohete){
+    if(!cohete)return;
+    if(!m_cohetes.contains(cohete))return;
+    removeItem(cohete);
+    m_cohetes.removeOne(cohete);
+    delete cohete;
+    ++m_cohetesRecolectados;
+    if(m_textoCohetes){
+        m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2").arg(m_cohetesRecolectados).arg(m_cohetesTotales));
+    }
+    if(m_cohetesRecolectados>=m_cohetesTotales){
+        if(m_timerNivel)
+            m_timerNivel->stop();
+        emit nivelCompletado(m_numeroNivel);
+    }
+}
+void Nivel::onJugadorAtrapado(){
+    if(m_timerNivel)
+        m_timerNivel->stop();
+    emit nivelFallado(m_numeroNivel);
 }
