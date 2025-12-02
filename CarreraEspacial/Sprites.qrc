@@ -82,8 +82,10 @@
         <file>Sprites/SpritesNivel1/Obstaculos/Obs3.png</file>
         <file>Sprites/SpritesNivel1/Obstaculos/Obs4.png</file>
         <file>Sprites/SpritesNivel1/Obstaculos/Obs5.png</file>
-        <file>Sprites/SpritesNivel1/Obstaculos/Obs6.png</file>
-        <file>Sprites/SpritesNivel1/Obstaculos/Obs7.png</file>
+        <file>Sprites/SpritesNivel1/Cohete/Coh1.png</file>
+        <file>Sprites/SpritesNivel1/Cohete/Coh2.png</file>
+        <file>Sprites/SpritesNivel1/Cohete/Coh3.png</file>
+        <file>Sprites/SpritesNivel1/Cohete/Coh4.png</file>
     </qresource>
 </RCC>
 

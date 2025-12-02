@@ -1,4 +1,6 @@
 #include "enemigo.h"
+#include "obstaculo.h"
+#include "jugador.h"
 #include <QRandomGenerator>
 #include <QGraphicsScene>
 #include <QtMath>
@@ -12,31 +14,33 @@ Enemigo::Enemigo(QGraphicsItem *parent)
     , m_direccionActual(Abajo)
     , m_frameActual(0)
     , m_tiempoAcumulado(0.0)
-    , m_tiempoPorFrame(0.08) // 80 ms por frame
+    , m_tiempoPorFrame(0.08)
+    , m_objetivo(nullptr)
+    , m_enPersecucion(false)
+    , m_radioDeteccion(200.0)        // distancia “x” para empezar a perseguir
+    , m_tiempoPersecucionMax(3.5)    // segundos persiguiendo
+    , m_tiempoPersecucionAcumulado(0.0)
 {
     cargarSprites();
 
-    // Sprite inicial (mirando hacia abajo)
     if (!m_framesAbajo.isEmpty()) {
         setPixmap(m_framesAbajo.first());
     }
 
-    // Timer de movimiento + animación (~60 FPS)
     m_timerMovimiento->setInterval(16);
     connect(m_timerMovimiento, &QTimer::timeout,
-            this, &Enemigo::actualizarPaso);
+            this,              &Enemigo::actualizarPaso);
     m_timerMovimiento->start();
 
-    // Timer para cambiar de dirección aleatoriamente
-    m_timerDireccion->setInterval(800);
+    // movimiento menos aleatorio: cambio de dirección cada 2 s
+    m_timerDireccion->setInterval(2000);
     connect(m_timerDireccion, &QTimer::timeout,
-            this, &Enemigo::cambiarDireccionAleatoria);
+            this,             &Enemigo::cambiarDireccionAleatoria);
     m_timerDireccion->start();
 
     cambiarDireccionAleatoria();
 }
 
-// ---------------------- CARGA DE SPRITES ----------------------
 
 void Enemigo::cargarSprites()
 {
@@ -45,9 +49,7 @@ void Enemigo::cargarSprites()
     m_framesArriba.clear();
     m_framesAbajo.clear();
 
-    auto cargar = [](QVector<QPixmap> &dest,
-                     const QString &carpeta,
-                     int numFrames)
+    auto cargar = [](QVector<QPixmap> &dest,const QString &carpeta,int numFrames)
     {
         dest.reserve(numFrames);
         for (int i = 1; i <= numFrames; ++i) {
@@ -63,18 +65,15 @@ void Enemigo::cargarSprites()
         }
     };
 
-    const int framesPorDireccion = 8; // usamos 8 por dirección
+    const int framesPorDireccion = 8;
 
     cargar(m_framesDer,    "mov_der",      framesPorDireccion);
     cargar(m_framesIzq,    "mov_izq",      framesPorDireccion);
     cargar(m_framesAbajo,  "mov_abajo",    framesPorDireccion);
 
-    // Para ARRIBA uso tus sprites de la carpeta mov_adelante.
-    // Si tu carpeta se llama distinto (p. ej. mov_arriba), cambia el string:
     cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
 }
 
-// ---------------------- MOVIMIENTO + LÍMITES + ANIMACIÓN ----------------------
 
 void Enemigo::actualizarPaso()
 {
@@ -83,29 +82,65 @@ void Enemigo::actualizarPaso()
 
     qreal dt = m_timerMovimiento->interval() / 1000.0;
 
-    // 1) Mover usando la física del Personaje
+    QPointF posAnterior = pos();
+
+    actualizarEstadoPersecucion(dt);
+
     actualizarMovimiento(dt);
 
-    // 2) Mantener dentro de los límites y cambiar de dirección si choca con el borde
     corregirLimites();
+    manejarColisiones(posAnterior);
 
-    // Si está prácticamente parado, no animamos
     if (qFuzzyIsNull(m_velocidad.x()) && qFuzzyIsNull(m_velocidad.y())) {
         return;
     }
 
-    // 3) Actualizar dirección según el vector velocidad
     if (qAbs(m_velocidad.x()) > qAbs(m_velocidad.y())) {
-        // Se mueve más en horizontal
         m_direccionActual = (m_velocidad.x() > 0.0) ? Derecha : Izquierda;
     } else {
-        // Se mueve más en vertical
         m_direccionActual = (m_velocidad.y() > 0.0) ? Abajo : Arriba;
     }
 
-    // 4) Avanzar la animación
     actualizarAnimacion(dt);
 }
+
+void Enemigo::actualizarEstadoPersecucion(qreal dt)
+{
+    if (!m_objetivo)
+        return;
+
+    QPointF diff = m_objetivo->pos() - pos();
+    qreal distancia = qSqrt(diff.x() * diff.x() + diff.y() * diff.y());
+
+    if (!m_enPersecucion) {
+        if (distancia <= m_radioDeteccion) {
+            // empieza la persecución
+            m_enPersecucion = true;
+            m_tiempoPersecucionAcumulado = 0.0;
+        } else {
+            // sigue patrullando normal
+            return;
+        }
+    }
+
+    // ya está en persecución
+    m_tiempoPersecucionAcumulado += dt;
+    if (m_tiempoPersecucionAcumulado > m_tiempoPersecucionMax) {
+        // se cansa de perseguir
+        m_enPersecucion = false;
+        m_tiempoPersecucionAcumulado = 0.0;
+        cambiarDireccionAleatoria();
+        return;
+    }
+
+    if (distancia > 5.0) {
+        QPointF dir = diff / distancia;
+        setVelocidadInicial(QPointF(dir.x() * m_velocidadBase,
+                                    dir.y() * m_velocidadBase));
+        setAceleracion(QPointF(0.0, 0.0));
+    }
+}
+
 
 void Enemigo::corregirLimites()
 {
@@ -117,7 +152,6 @@ void Enemigo::corregirLimites()
     QPointF p         = pos();
     bool chocoBorde   = false;
 
-    // Izquierda / arriba
     if (p.x() < limites.left()) {
         p.setX(limites.left());
         chocoBorde = true;
@@ -126,8 +160,6 @@ void Enemigo::corregirLimites()
         p.setY(limites.top());
         chocoBorde = true;
     }
-
-    // Derecha / abajo
     if (p.x() + rectLocal.width() > limites.right()) {
         p.setX(limites.right() - rectLocal.width());
         chocoBorde = true;
@@ -139,7 +171,6 @@ void Enemigo::corregirLimites()
 
     if (chocoBorde) {
         setPos(p);
-        // Cambiamos a una nueva dirección aleatoria para que no se quede pegado al borde
         cambiarDireccionAleatoria();
     }
 }
@@ -167,35 +198,73 @@ void Enemigo::actualizarAnimacion(qreal dt)
     setPixmap(lista->at(m_frameActual));
 }
 
-// ---------------------- DIRECCIÓN ALEATORIA ----------------------
 
 void Enemigo::cambiarDireccionAleatoria()
 {
+    if (m_enPersecucion)
+        return;
+
     int dir = QRandomGenerator::global()->bounded(4);
 
     switch (dir) {
-    case 0: // Derecha
+    case 0:
         m_direccionActual = Derecha;
         setVelocidadInicial(QPointF(m_velocidadBase, 0.0));
         break;
-    case 1: // Izquierda
+    case 1:
         m_direccionActual = Izquierda;
         setVelocidadInicial(QPointF(-m_velocidadBase, 0.0));
         break;
-    case 2: // Arriba
+    case 2:
         m_direccionActual = Arriba;
         setVelocidadInicial(QPointF(0.0, -m_velocidadBase));
         break;
-    case 3: // Abajo
+    case 3:
     default:
         m_direccionActual = Abajo;
         setVelocidadInicial(QPointF(0.0, m_velocidadBase));
         break;
     }
 
-    // Sin aceleración, velocidad constante
     setAceleracion(QPointF(0.0, 0.0));
-
-    // Reiniciamos el ciclo de animación
     m_frameActual = 0;
+}
+
+void Enemigo::manejarColisiones(const QPointF &posAnterior)
+{
+    if (!scene())
+        return;
+
+    const auto colisiones = collidingItems();
+    for (QGraphicsItem *item : colisiones) {
+
+        if (dynamic_cast<Obstaculo*>(item)) {
+
+            setPos(posAnterior);
+            cambiarDireccionAleatoria();
+
+            QPointF p = pos();
+            switch (m_direccionActual) {
+            case Derecha:   p.rx() += 2.0; break;
+            case Izquierda: p.rx() -= 2.0; break;
+            case Arriba:    p.ry() -= 2.0; break;
+            case Abajo:     p.ry() += 2.0; break;
+            }
+
+            setPos(p);
+            corregirLimites();
+            break;
+        }
+        else if (dynamic_cast<Jugador*>(item)) {
+            // enemigo y jugador se tocan -> fin de nivel
+            emit jugadorAlcanzado();
+            break;
+        }
+    }
+}
+
+
+void Enemigo::setObjetivo(Jugador *jugador)
+{
+    m_objetivo = jugador;
 }

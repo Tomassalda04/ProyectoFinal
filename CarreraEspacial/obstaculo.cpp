@@ -11,6 +11,5 @@ Obstaculo::Obstaculo(const QString &rutaSprite, QGraphicsItem *parent)
     }
     setPixmap(sprite);
 
-    // Si quieres asegurarte de que siempre quede por delante del fondo:
     setZValue(1);
 }

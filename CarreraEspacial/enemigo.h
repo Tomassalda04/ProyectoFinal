@@ -6,12 +6,19 @@
 #include <QVector>
 #include <QPixmap>
 
+class Jugador;
+
 class Enemigo : public Personaje
 {
     Q_OBJECT
 
 public:
     explicit Enemigo(QGraphicsItem *parent = nullptr);
+
+    void setObjetivo(Jugador *jugador);
+
+signals:
+    void jugadorAlcanzado();
 
 private:
     QTimer *m_timerMovimiento;
@@ -35,12 +42,20 @@ private:
     QVector<QPixmap> m_framesArriba;
     QVector<QPixmap> m_framesAbajo;
 
+    Jugador *m_objetivo;
+    bool     m_enPersecucion;
+    qreal    m_radioDeteccion;
+    qreal    m_tiempoPersecucionMax;
+    qreal    m_tiempoPersecucionAcumulado;
+
     void cargarSprites();
     void actualizarAnimacion(qreal dt);
-    void corregirLimites();      // que no salga de la pantalla
+    void corregirLimites();
+    void manejarColisiones(const QPointF &posAnterior);
+    void actualizarEstadoPersecucion(qreal dt);
 
 private slots:
-    void actualizarPaso();       // movimiento + animación
+    void actualizarPaso();
     void cambiarDireccionAleatoria();
 };
 
