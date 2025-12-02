@@ -12,6 +12,8 @@ class Nivel:public QGraphicsScene{
     Q_OBJECT
 public:
     explicit Nivel(int numeroNivel,QObject *parent=nullptr);
+    QGraphicsPixmapItem *cohete()const{return m_cohete;}
+    void moverCohete(int dx,int dy);
 signals:
     void nivelCompletado(int numeroNivel);
     void nivelFallado(int numeroNivel);
@@ -33,5 +35,6 @@ private:
     int m_segundosRestantes=40;
     QGraphicsTextItem *m_textoTiempo=nullptr;
     QGraphicsTextItem *m_textoCohetes=nullptr;
+    QGraphicsPixmapItem *m_cohete=nullptr;
 };
 #endif

@@ -7,6 +7,11 @@
         <file>Sprites/SpritesNivel3/MiraNivel3.png</file>
         <file>Sprites/SpritesNivel3/MS-DOS - Blake Stone_ Planet Strike - Enemies - Alien Protector.png</file>
         <file>Sprites/Fondo/fondo.png</file>
+
+        <!-- Archivo que tú agregaste -->
+        <file>Sprites/SpritesNivel2/nave1.png</file>
+
+        <!-- Archivos que venían desde main -->
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov1.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov2.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov3.png</file>
@@ -83,3 +88,4 @@
         <file>Sprites/SpritesNivel1/Cohete/Coh4.png</file>
     </qresource>
 </RCC>
+
