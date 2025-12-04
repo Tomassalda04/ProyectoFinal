@@ -67,16 +67,23 @@ void Nivel::crearNivel1(){
     }
     m_cohetesRecolectados=0;
     m_cohetesTotales=m_cohetes.size();
-    m_enemigo=new Enemigo();
-    addItem(m_enemigo);
-    m_enemigo->setPos(100,300);
-    m_jugador=new Jugador();
+
+    m_jugador = new Jugador();
     addItem(m_jugador);
-    m_jugador->setPos(500,100);
+    m_jugador->setPos(500, 100);
     m_jugador->setFocus();
+
+    connect(m_jugador, &Jugador::coheteRecolectado,this,&Nivel::manejarCoheteRecolectado);
+    m_enemigo = new Enemigo();
+    addItem(m_enemigo);
+    m_enemigo->setPos(100, 300);
     m_enemigo->setObjetivo(m_jugador);
-    connect(m_enemigo,&Enemigo::jugadorAlcanzado,this,&Nivel::onJugadorAtrapado);
-    connect(m_jugador,&Jugador::coheteRecolectado,this,&Nivel::manejarCoheteRecolectado);
+    connect(m_enemigo, &Enemigo::jugadorAlcanzado, this, &Nivel::onJugadorAtrapado);
+    Enemigo *enemigo2 = new Enemigo();
+    addItem(enemigo2);
+    enemigo2->setPos(750, 320);
+    enemigo2->setObjetivo(m_jugador);
+    connect(enemigo2, &Enemigo::jugadorAlcanzado, this, &Nivel::onJugadorAtrapado);
     m_segundosRestantes=40;
     if(!m_timerNivel){
         m_timerNivel=new QTimer(this);

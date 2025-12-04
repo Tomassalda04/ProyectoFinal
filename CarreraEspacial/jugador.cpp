@@ -37,13 +37,15 @@ void Jugador::cargarSprites()
     m_framesArriba.clear();
     m_framesAbajo.clear();
 
-    auto cargar = [](QVector<QPixmap> &dest,const QString &carpeta,int numFrames)
+    auto cargar = [](QVector<QPixmap> &dest, const QString &carpeta, int numFrames)
     {
         dest.reserve(numFrames);
         for (int i = 1; i <= numFrames; ++i) {
-            QString ruta = QString(":/Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/%1/mov%2.png")
-            .arg(carpeta)
-                .arg(i);
+
+            QString ruta = QString(":/Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/%1/mov%2.png")
+                               .arg(carpeta)
+                               .arg(i);
+
             QPixmap frame(ruta);
             if (!frame.isNull()) {
                 dest.push_back(frame);
@@ -59,6 +61,7 @@ void Jugador::cargarSprites()
     cargar(m_framesAbajo,  "mov_abajo",    framesPorDireccion);
     cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
 }
+
 
 void Jugador::actualizarPaso()
 {

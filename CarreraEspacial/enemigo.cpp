@@ -240,29 +240,31 @@ void Enemigo::manejarColisiones(const QPointF &posAnterior)
 
         if (dynamic_cast<Obstaculo*>(item)) {
 
+            Direccion dirPrev = m_direccionActual;
+
             setPos(posAnterior);
-            cambiarDireccionAleatoria();
 
             QPointF p = pos();
-            switch (m_direccionActual) {
-            case Derecha:   p.rx() += 2.0; break;
-            case Izquierda: p.rx() -= 2.0; break;
-            case Arriba:    p.ry() -= 2.0; break;
-            case Abajo:     p.ry() += 2.0; break;
+            switch (dirPrev) {
+            case Derecha:   p.rx() -= 2.0; break;
+            case Izquierda: p.rx() += 2.0; break;
+            case Arriba:    p.ry() += 2.0; break;
+            case Abajo:     p.ry() -= 2.0; break;
             }
 
             setPos(p);
             corregirLimites();
+
+            cambiarDireccionAleatoria();
+
             break;
         }
         else if (dynamic_cast<Jugador*>(item)) {
-            // enemigo y jugador se tocan -> fin de nivel
             emit jugadorAlcanzado();
             break;
         }
     }
 }
-
 
 void Enemigo::setObjetivo(Jugador *jugador)
 {

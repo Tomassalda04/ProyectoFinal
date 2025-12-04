@@ -7,11 +7,7 @@
         <file>Sprites/SpritesNivel3/MiraNivel3.png</file>
         <file>Sprites/SpritesNivel3/MS-DOS - Blake Stone_ Planet Strike - Enemies - Alien Protector.png</file>
         <file>Sprites/Fondo/fondo.png</file>
-
-        <!-- Archivo que tú agregaste -->
         <file>Sprites/SpritesNivel2/nave1.png</file>
-
-        <!-- Archivos que venían desde main -->
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov1.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov2.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov3.png</file>
@@ -86,6 +82,69 @@
         <file>Sprites/SpritesNivel1/Cohete/Coh2.png</file>
         <file>Sprites/SpritesNivel1/Cohete/Coh3.png</file>
         <file>Sprites/SpritesNivel1/Cohete/Coh4.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov1.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov2.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov3.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov4.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov5.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov6.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov7.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov8.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov9.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov10.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov11.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov12.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov13.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov14.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov15.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_abajo/mov16.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov1.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov2.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov3.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov4.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov5.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov6.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov7.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov8.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov9.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov10.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov11.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov12.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov13.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov14.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov15.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_adelante/mov16.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov1.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov2.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov3.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov4.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov5.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov6.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov7.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov8.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov9.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov10.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov11.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov12.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov13.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov14.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov15.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_der/mov16.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov1.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov2.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov3.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov4.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov5.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov6.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov7.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov8.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov9.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov10.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov11.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov12.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov13.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov14.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov15.png</file>
+        <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov16.png</file>
     </qresource>
 </RCC>
-
