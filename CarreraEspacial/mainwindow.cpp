@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "naveespacial.h"
 #include <QImage>
 #include <QBrush>
 
@@ -10,13 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Para poder recibir eventos de teclado
     setFocusPolicy(Qt::StrongFocus);
 
-    // La escena empieza alineada arriba a la izquierda
     ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-
-    // En el menú no necesitamos scroll
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -32,6 +28,19 @@ MainWindow::MainWindow(QWidget *parent)
     nivel1 = new Nivel(1, this);
     nivel2 = new Nivel(2, this);
     nivel3 = new Nivel(3, this);
+
+    // Reacciones del nivel 2
+    connect(nivel2, &Nivel::nivelFallado,
+            this, [this](int n){
+                if (n == 2)
+                    volverAlMenu();
+            });
+
+    connect(nivel2, &Nivel::nivelCompletado,
+            this, [this](int n){
+                if (n == 2)
+                    on_pushButton_3_clicked(); // pasar a nivel 3
+            });
 }
 
 MainWindow::~MainWindow()
@@ -39,7 +48,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// ───────── NIVEL 1 (botón "NIVEL 1") ─────────
+// ───────── NIVEL 1 ─────────
 void MainWindow::on_pushButton_2_clicked()
 {
     ui->pushButton->hide();
@@ -47,7 +56,6 @@ void MainWindow::on_pushButton_2_clicked()
     ui->pushButton_3->hide();
 
     ui->graphicsView->setBackgroundBrush(Qt::NoBrush);
-
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -56,7 +64,7 @@ void MainWindow::on_pushButton_2_clicked()
     this->setFocus();
 }
 
-// ───────── NIVEL 2 (botón "NIVEL 2") ─────────
+// ───────── NIVEL 2 ─────────
 void MainWindow::on_pushButton_clicked()
 {
     ui->pushButton->hide();
@@ -65,16 +73,19 @@ void MainWindow::on_pushButton_clicked()
 
     ui->graphicsView->setBackgroundBrush(Qt::NoBrush);
 
-    // Nivel 2: scroll horizontal activado
+    // Scroll horizontal para ver el fondo largo
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     ui->graphicsView->setScene(nivel2);
 
+    // El teclado lo manejo yo (MainWindow)
     this->setFocus();
+
+    nivel2->iniciar();
 }
 
-// ───────── NIVEL 3 (botón "NIVEL 3") ─────────
+// ───────── NIVEL 3 ─────────
 void MainWindow::on_pushButton_3_clicked()
 {
     ui->pushButton->hide();
@@ -82,7 +93,6 @@ void MainWindow::on_pushButton_3_clicked()
     ui->pushButton_3->hide();
 
     ui->graphicsView->setBackgroundBrush(Qt::NoBrush);
-
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -91,7 +101,7 @@ void MainWindow::on_pushButton_3_clicked()
     this->setFocus();
 }
 
-// ───────── Volver al menú (por si lo usas luego) ─────────
+// ───────── Volver al menú ─────────
 void MainWindow::volverAlMenu()
 {
     ui->graphicsView->setScene(menuScene);
@@ -109,31 +119,37 @@ void MainWindow::volverAlMenu()
     this->setFocus();
 }
 
-// ───────── Teclado: mover cohete en NIVEL 2 ─────────
+// ───────── Teclado (manda órdenes a la nave) ─────────
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    // Solo manejamos el teclado cuando la escena actual es el nivel 2
-    if (ui->graphicsView->scene() == nivel2 && nivel2->cohete()) {
-        const int paso = 15; // píxeles por pulsación
+    if (ui->graphicsView->scene() == nivel2 && nivel2->nave()) {
+        auto nave = nivel2->nave();
 
-        int dx = 0;
-        int dy = 0;
-
-        if (event->key() == Qt::Key_Right) {
-            dx = +paso;
-        } else if (event->key() == Qt::Key_Left) {
-            dx = -paso;
-        } else if (event->key() == Qt::Key_Up) {
-            dy = -paso;    // hacia arriba (Y disminuye)
+        if (event->key() == Qt::Key_Up) {
+            nave->setArribaPresionado(true);
         } else if (event->key() == Qt::Key_Down) {
-            dy = +paso;    // hacia abajo (Y aumenta)
-        }
-
-        if (dx != 0 || dy != 0) {
-            nivel2->moverCohete(dx, dy);
-            ui->graphicsView->centerOn(nivel2->cohete());
+            nave->setAbajoPresionado(true);
+        } else if (event->key() == Qt::Key_Right) {
+            nave->setDerechaPresionado(true);
         }
     }
 
     QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (ui->graphicsView->scene() == nivel2 && nivel2->nave()) {
+        auto nave = nivel2->nave();
+
+        if (event->key() == Qt::Key_Up) {
+            nave->setArribaPresionado(false);
+        } else if (event->key() == Qt::Key_Down) {
+            nave->setAbajoPresionado(false);
+        } else if (event->key() == Qt::Key_Right) {
+            nave->setDerechaPresionado(false);
+        }
+    }
+
+    QMainWindow::keyReleaseEvent(event);
 }

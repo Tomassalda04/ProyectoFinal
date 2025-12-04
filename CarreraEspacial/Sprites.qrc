@@ -10,6 +10,16 @@
         <file>Sprites/SpritesNivel3/MiraNivel3.png</file>
         <file>Sprites/SpritesNivel3/MS-DOS - Blake Stone_ Planet Strike - Enemies - Alien Protector.png</file>
         <file>Sprites/Fondo/fondo.png</file>
-        <file>Sprites/SpritesNivel2/nave1.png</file>
+        <file>CarreraEspacial.pro</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs1.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs2.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs3.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs4.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs5.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs6.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave1.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave2.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave3.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs7.png</file>
     </qresource>
 </RCC>

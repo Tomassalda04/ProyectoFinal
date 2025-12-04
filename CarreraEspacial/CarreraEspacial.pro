@@ -12,6 +12,7 @@ SOURCES += \
     enemigo.cpp \
     main.cpp \
     mainwindow.cpp \
+    naveespacial.cpp \
     nivel.cpp \
     obstaculo.cpp \
     personaje.cpp
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     enemigo.h \
     mainwindow.h \
+    naveespacial.h \
     nivel.h \
     obstaculo.h \
     personaje.h

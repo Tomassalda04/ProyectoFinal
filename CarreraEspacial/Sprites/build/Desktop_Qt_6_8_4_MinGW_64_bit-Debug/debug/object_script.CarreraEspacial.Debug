@@ -1,0 +1,10 @@
+debug/enemigo.o
+debug/main.o
+debug/mainwindow.o
+debug/nivel.o
+debug/obstaculo.o
+debug/personaje.o
+debug/qrc_Sprites.o
+debug/moc_enemigo.o
+debug/moc_mainwindow.o
+debug/moc_personaje.o

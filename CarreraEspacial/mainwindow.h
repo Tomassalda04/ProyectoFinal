@@ -23,6 +23,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private slots:
     void on_pushButton_2_clicked();  // NIVEL 1
@@ -42,4 +43,5 @@ private:
 };
 
 #endif // MAINWINDOW_H
+
 

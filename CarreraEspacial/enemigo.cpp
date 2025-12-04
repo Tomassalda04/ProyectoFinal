@@ -14,14 +14,15 @@ Enemigo::Enemigo(QGraphicsItem *parent)
     , m_tiempoAcumulado(0.0)
     , m_tiempoPorFrame(0.08) // 80 ms por frame
 {
+    // Cargar sprites
     cargarSprites();
 
-    // Sprite inicial (mirando hacia abajo)
+    // Sprite inicial
     if (!m_framesAbajo.isEmpty()) {
         setPixmap(m_framesAbajo.first());
     }
 
-    // Timer de movimiento + animación (~60 FPS)
+    // Timer de movimiento (unas ~60 FPS: 16 ms)
     m_timerMovimiento->setInterval(16);
     connect(m_timerMovimiento, &QTimer::timeout,
             this, &Enemigo::actualizarPaso);
@@ -33,6 +34,7 @@ Enemigo::Enemigo(QGraphicsItem *parent)
             this, &Enemigo::cambiarDireccionAleatoria);
     m_timerDireccion->start();
 
+    // Dirección inicial
     cambiarDireccionAleatoria();
 }
 
@@ -58,64 +60,72 @@ void Enemigo::cargarSprites()
             if (!frame.isNull()) {
                 dest.push_back(frame);
             } else {
-                qWarning() << "No se pudo cargar sprite:" << ruta;
+                qWarning() << "No se pudo cargar frame enemigo:" << ruta;
             }
         }
     };
 
-    const int framesPorDireccion = 8; // usamos 8 por dirección
+    const int framesPorDireccion = 8; // ajusta al número real de frames
 
+    // OJO: asegúrate de que estas carpetas existan en tu .qrc
     cargar(m_framesDer,    "mov_der",      framesPorDireccion);
     cargar(m_framesIzq,    "mov_izq",      framesPorDireccion);
     cargar(m_framesAbajo,  "mov_abajo",    framesPorDireccion);
 
-    // Para ARRIBA uso tus sprites de la carpeta mov_adelante.
-    // Si tu carpeta se llama distinto (p. ej. mov_arriba), cambia el string:
+    // Para ARRIBA uso una carpeta llamada "mov_adelante" (cámbiala si la tuya se llama distinto)
     cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
 }
 
-// ---------------------- MOVIMIENTO + LÍMITES + ANIMACIÓN ----------------------
+// ---------------------- ANIMACIÓN ----------------------
 
-void Enemigo::actualizarPaso()
+void Enemigo::actualizarAnimacion(qreal dt)
 {
-    if (!scene())
-        return;
+    Q_UNUSED(dt);
 
-    qreal dt = m_timerMovimiento->interval() / 1000.0;
+    QVector<QPixmap> *frames = nullptr;
 
-    // 1) Mover usando la física del Personaje
-    actualizarMovimiento(dt);
-
-    // 2) Mantener dentro de los límites y cambiar de dirección si choca con el borde
-    corregirLimites();
-
-    // Si está prácticamente parado, no animamos
-    if (qFuzzyIsNull(m_velocidad.x()) && qFuzzyIsNull(m_velocidad.y())) {
-        return;
+    switch (m_direccionActual) {
+    case Derecha:
+        frames = &m_framesDer;
+        break;
+    case Izquierda:
+        frames = &m_framesIzq;
+        break;
+    case Arriba:
+        frames = &m_framesArriba;
+        break;
+    case Abajo:
+    default:
+        frames = &m_framesAbajo;
+        break;
     }
 
-    // 3) Actualizar dirección según el vector velocidad
-    if (qAbs(m_velocidad.x()) > qAbs(m_velocidad.y())) {
-        // Se mueve más en horizontal
-        m_direccionActual = (m_velocidad.x() > 0.0) ? Derecha : Izquierda;
-    } else {
-        // Se mueve más en vertical
-        m_direccionActual = (m_velocidad.y() > 0.0) ? Abajo : Arriba;
+    if (!frames || frames->isEmpty())
+        return;
+
+    // Avanzar el tiempo acumulado
+    m_tiempoAcumulado += dt;
+
+    // Cambiar de frame cuando el tiempo acumulado supera el tiempo por frame
+    while (m_tiempoAcumulado >= m_tiempoPorFrame) {
+        m_tiempoAcumulado -= m_tiempoPorFrame;
+        m_frameActual = (m_frameActual + 1) % frames->size();
     }
 
-    // 4) Avanzar la animación
-    actualizarAnimacion(dt);
+    setPixmap(frames->at(m_frameActual));
 }
+
+// ---------------------- LÍMITES DE LA ESCENA ----------------------
 
 void Enemigo::corregirLimites()
 {
     if (!scene())
         return;
 
-    QRectF limites    = scene()->sceneRect();
-    QRectF rectLocal  = boundingRect();
-    QPointF p         = pos();
-    bool chocoBorde   = false;
+    QRectF limites   = scene()->sceneRect();
+    QRectF rectLocal = boundingRect();
+    QPointF p        = pos();
+    bool chocoBorde  = false;
 
     // Izquierda / arriba
     if (p.x() < limites.left()) {
@@ -137,40 +147,54 @@ void Enemigo::corregirLimites()
         chocoBorde = true;
     }
 
+    setPos(p);
+
+    // Si tocó borde, cambia aleatoriamente la dirección
     if (chocoBorde) {
-        setPos(p);
-        // Cambiamos a una nueva dirección aleatoria para que no se quede pegado al borde
         cambiarDireccionAleatoria();
     }
 }
 
-void Enemigo::actualizarAnimacion(qreal dt)
+// ---------------------- LÓGICA DE MOVIMIENTO + ANIMACIÓN ----------------------
+
+void Enemigo::actualizarPaso()
 {
-    m_tiempoAcumulado += dt;
-    if (m_tiempoAcumulado < m_tiempoPorFrame)
+    if (!scene())
         return;
 
-    m_tiempoAcumulado = 0.0;
+    // dt en segundos
+    qreal dt = m_timerMovimiento->interval() / 1000.0;
 
-    QVector<QPixmap> *lista = nullptr;
-    switch (m_direccionActual) {
-    case Derecha:   lista = &m_framesDer;    break;
-    case Izquierda: lista = &m_framesIzq;    break;
-    case Arriba:    lista = &m_framesArriba; break;
-    case Abajo:     lista = &m_framesAbajo;  break;
+    // 1) Mover usando la física del Personaje
+    actualizarMovimiento(dt);
+
+    // 2) Mantener dentro de los límites y cambiar de dirección si choca con el borde
+    corregirLimites();
+
+    // Si está prácticamente parado, no animamos
+    const qreal eps = 0.001;
+    if (qAbs(m_velocidad.x()) < eps && qAbs(m_velocidad.y()) < eps) {
+        return;
     }
 
-    if (!lista || lista->isEmpty())
-        return;
+    // 3) Actualizar dirección según el vector velocidad
+    if (qAbs(m_velocidad.x()) > qAbs(m_velocidad.y())) {
+        // Se mueve más en horizontal
+        m_direccionActual = (m_velocidad.x() > 0.0) ? Derecha : Izquierda;
+    } else {
+        // Se mueve más en vertical
+        m_direccionActual = (m_velocidad.y() > 0.0) ? Abajo : Arriba;
+    }
 
-    m_frameActual = (m_frameActual + 1) % lista->size();
-    setPixmap(lista->at(m_frameActual));
+    // 4) Avanzar la animación
+    actualizarAnimacion(dt);
 }
 
-// ---------------------- DIRECCIÓN ALEATORIA ----------------------
+// ---------------------- CAMBIO DE DIRECCIÓN ALEATORIO ----------------------
 
 void Enemigo::cambiarDireccionAleatoria()
 {
+    // 0..3
     int dir = QRandomGenerator::global()->bounded(4);
 
     switch (dir) {
@@ -198,4 +222,6 @@ void Enemigo::cambiarDireccionAleatoria()
 
     // Reiniciamos el ciclo de animación
     m_frameActual = 0;
+    m_tiempoAcumulado = 0.0;
 }
+
