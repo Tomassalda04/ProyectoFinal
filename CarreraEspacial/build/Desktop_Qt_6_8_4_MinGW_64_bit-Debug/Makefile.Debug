@@ -527,6 +527,7 @@ debug/moc_mainwindow.cpp: ../../mainwindow.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qvector.h \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.4/mingw_64/bin/moc.exe
 	C:\Qt\6.8.4\mingw_64\bin\moc.exe $(DEFINES) --include C:/Users/danie/OneDrive/Desktop/ProyectoFinal/CarreraEspacial/build/Desktop_Qt_6_8_4_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.4/mingw_64/mkspecs/win32-g++ -IC:/Users/danie/OneDrive/Desktop/ProyectoFinal/CarreraEspacial -IC:/Qt/6.8.4/mingw_64/include -IC:/Qt/6.8.4/mingw_64/include/QtWidgets -IC:/Qt/6.8.4/mingw_64/include/QtGui -IC:/Qt/6.8.4/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\mainwindow.h -o debug\moc_mainwindow.cpp
@@ -838,6 +839,7 @@ debug/moc_nivel.cpp: ../../nivel.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qvector.h \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.4/mingw_64/bin/moc.exe
 	C:\Qt\6.8.4\mingw_64\bin\moc.exe $(DEFINES) --include C:/Users/danie/OneDrive/Desktop/ProyectoFinal/CarreraEspacial/build/Desktop_Qt_6_8_4_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.4/mingw_64/mkspecs/win32-g++ -IC:/Users/danie/OneDrive/Desktop/ProyectoFinal/CarreraEspacial -IC:/Qt/6.8.4/mingw_64/include -IC:/Qt/6.8.4/mingw_64/include/QtWidgets -IC:/Qt/6.8.4/mingw_64/include/QtGui -IC:/Qt/6.8.4/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\nivel.h -o debug\moc_nivel.cpp
@@ -1385,6 +1387,7 @@ debug/main.o: ../../main.cpp ../../mainwindow.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qvector.h \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		C:/Qt/6.8.4/mingw_64/include/QtWidgets/QApplication \
 		C:/Qt/6.8.4/mingw_64/include/QtWidgets/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\..\main.cpp
@@ -1596,6 +1599,7 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qvector.h \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		ui_mainwindow.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVariant \
 		C:/Qt/6.8.4/mingw_64/include/QtWidgets/QApplication \
@@ -1618,7 +1622,6 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.8.4/mingw_64/include/QtWidgets/QWidget \
 		../../naveespacial.h \
 		../../personaje.h \
-		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		C:/Qt/6.8.4/mingw_64/include/QtGui/QImage \
 		C:/Qt/6.8.4/mingw_64/include/QtGui/QBrush
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\mainwindow.cpp
@@ -1990,11 +1993,11 @@ debug/nivel.o: ../../nivel.cpp ../../nivel.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qvector.h \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		../../naveespacial.h \
 		../../personaje.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QObject \
 		C:/Qt/6.8.4/mingw_64/include/QtWidgets/QGraphicsPixmapItem \
-		C:/Qt/6.8.4/mingw_64/include/QtCore/QPointF \
 		../../obstaculo.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QString \
 		C:/Qt/6.8.4/mingw_64/include/QtGui/QPixmap \
@@ -2055,7 +2058,11 @@ debug/nivel.o: ../../nivel.cpp ../../nivel.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/qlocale.h \
 		C:/Qt/6.8.4/mingw_64/include/QtGui/qguiapplication_platform.h \
 		C:/Qt/6.8.4/mingw_64/include/QtCore/QStringList \
-		C:/Qt/6.8.4/mingw_64/include/QtGui/QPainter
+		C:/Qt/6.8.4/mingw_64/include/QtGui/QPainter \
+		C:/Qt/6.8.4/mingw_64/include/QtCore/QtMath \
+		C:/Qt/6.8.4/mingw_64/include/QtWidgets/QScrollBar \
+		C:/Qt/6.8.4/mingw_64/include/QtWidgets/qscrollbar.h \
+		C:/Qt/6.8.4/mingw_64/include/QtWidgets/qabstractslider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\nivel.o ..\..\nivel.cpp
 
 debug/obstaculo.o: ../../obstaculo.cpp ../../obstaculo.h \
