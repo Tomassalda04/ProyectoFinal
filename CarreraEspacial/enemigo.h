@@ -6,16 +6,24 @@
 #include <QVector>
 #include <QPixmap>
 
-class Jugador;
+class QGraphicsItem;
 
 class Enemigo : public Personaje
 {
     Q_OBJECT
 
 public:
-    explicit Enemigo(QGraphicsItem *parent = nullptr);
+    enum TipoSprite {
+        Soldado,
+        AlienNivel3
+    };
 
-    void setObjetivo(Jugador *jugador);
+    explicit Enemigo(TipoSprite tipo = Soldado, QGraphicsItem *parent = nullptr);
+
+    void setObjetivo(QGraphicsItem *objetivo);
+    void setRadioDeteccion(qreal radio);
+
+    void configurarMovimientoDescendente(qreal yMax, qreal velocidadY);
 
 signals:
     void jugadorAlcanzado();
@@ -42,11 +50,16 @@ private:
     QVector<QPixmap> m_framesArriba;
     QVector<QPixmap> m_framesAbajo;
 
-    Jugador *m_objetivo;
-    bool     m_enPersecucion;
-    qreal    m_radioDeteccion;
-    qreal    m_tiempoPersecucionMax;
-    qreal    m_tiempoPersecucionAcumulado;
+    TipoSprite     m_tipoSprite;
+    QGraphicsItem *m_objetivo;
+    bool           m_enPersecucion;
+    qreal          m_radioDeteccion;
+    qreal          m_tiempoPersecucionMax;
+    qreal          m_tiempoPersecucionAcumulado;
+
+    bool  m_movimientoDescendente;
+    qreal m_yMaxDescendente;
+    qreal m_velocidadDescendente;
 
     void cargarSprites();
     void actualizarAnimacion(qreal dt);
@@ -60,3 +73,4 @@ private slots:
 };
 
 #endif // ENEMIGO_H
+

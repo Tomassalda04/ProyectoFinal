@@ -135,6 +135,10 @@ release/qrc_Sprites.cpp: ../../Sprites.qrc \
 		../../Sprites/SpritesNivel3/MS-DOS\ -\ Blake\ Stone_\ Planet\ Strike\ -\ Enemies\ -\ Alien\ Protector.png \
 		../../Sprites/SpritesNivel3/MiraNivel3.png \
 		../../Sprites/SpritesNivel3/FondoNivel3.png \
+		../../Sprites/SpritesNivel3/marciano/fila2/mov4.png \
+		../../Sprites/SpritesNivel3/marciano/fila2/mov2.png \
+		../../Sprites/SpritesNivel3/marciano/fila2/mov1.png \
+		../../Sprites/SpritesNivel3/marciano/fila2/mov3.png \
 		../../Sprites/SpritesNivel2/PC\ _\ Computer\ -\ Out\ There\ Somewhere\ -\ Miscellaneous\ -\ Spaceship\ Minigame.png \
 		../../Sprites/SpritesNivel2/PC\ _\ Computer\ -\ Klik\ &\ Play\ -\ Graphic\ Libraries\ -\ Spaceships\ &\ Planets.png \
 		../../Sprites/SpritesNivel2/FondoNivel2.png \
@@ -958,6 +962,7 @@ release/moc_enemigo.cpp: ../../enemigo.h \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/qvector.h \
 		C:/Qt/6.8.3/mingw_64/include/QtGui/QPixmap \
+		C:/Qt/6.8.3/mingw_64/include/QtWidgets/QGraphicsItem \
 		release/moc_predefs.h \
 		C:/Qt/6.8.3/mingw_64/bin/moc.exe
 	C:\Qt\6.8.3\mingw_64\bin\moc.exe $(DEFINES) --include "C:/Users/stoma/OneDrive/Escritorio/UdeA/Proyecto final/ProyectoFinal/CarreraEspacial/build/Desktop_Qt_6_8_3_MinGW_64_bit-Debug/release/moc_predefs.h" -IC:/Qt/6.8.3/mingw_64/mkspecs/win32-g++ -I"C:/Users/stoma/OneDrive/Escritorio/UdeA/Proyecto final/ProyectoFinal/CarreraEspacial" -IC:/Qt/6.8.3/mingw_64/include -IC:/Qt/6.8.3/mingw_64/include/QtWidgets -IC:/Qt/6.8.3/mingw_64/include/QtGui -IC:/Qt/6.8.3/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\enemigo.h -o release\moc_enemigo.cpp
@@ -2101,6 +2106,7 @@ release/enemigo.o: ../../enemigo.cpp ../../enemigo.h \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QVector \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/qvector.h \
 		C:/Qt/6.8.3/mingw_64/include/QtGui/QPixmap \
+		C:/Qt/6.8.3/mingw_64/include/QtWidgets/QGraphicsItem \
 		../../obstaculo.h \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QString \
 		../../jugador.h \
@@ -2425,6 +2431,7 @@ release/nivel.o: ../../nivel.cpp ../../nivel.h \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QPointF \
 		C:/Qt/6.8.3/mingw_64/include/QtGui/QPixmap \
 		../../enemigo.h \
+		C:/Qt/6.8.3/mingw_64/include/QtWidgets/QGraphicsItem \
 		../../obstaculo.h \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QString \
 		C:/Qt/6.8.3/mingw_64/include/QtCore/QDebug

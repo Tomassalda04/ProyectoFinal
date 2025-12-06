@@ -68,9 +68,19 @@ void MainWindow::on_pushButton_3_clicked()
     ui->graphicsView->setBackgroundBrush(Qt::NoBrush);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    if (nivel3) {
+        delete nivel3;
+        nivel3 = nullptr;
+    }
+    nivel3 = new Nivel(3, this);
+    connect(nivel3, &Nivel::nivelCompletado, this, &MainWindow::onNivelCompletado);
+    connect(nivel3, &Nivel::nivelFallado,    this, &MainWindow::onNivelFallado);
+
     ui->graphicsView->setScene(nivel3);
     this->setFocus();
 }
+
 
 void MainWindow::volverAlMenu()
 {
@@ -86,22 +96,66 @@ void MainWindow::volverAlMenu()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    // --- NIVEL 2: mover cohete ---
     if (ui->graphicsView->scene() == nivel2 && nivel2->cohete()) {
         const int paso = 15;
         int dx = 0;
         int dy = 0;
-        if (event->key() == Qt::Key_Right) {
-            dx = +paso;
-        } else if (event->key() == Qt::Key_Left) {
-            dx = -paso;
-        } else if (event->key() == Qt::Key_Up) {
-            dy = -paso;
-        } else if (event->key() == Qt::Key_Down) {
-            dy = +paso;
+
+        switch (event->key()) {
+        case Qt::Key_Right: dx = +paso; break;
+        case Qt::Key_Left:  dx = -paso; break;
+        case Qt::Key_Up:    dy = -paso; break;
+        case Qt::Key_Down:  dy = +paso; break;
+        default: break;
         }
+
         if (dx != 0 || dy != 0) {
             nivel2->moverCohete(dx, dy);
             ui->graphicsView->centerOn(nivel2->cohete());
+            event->accept();
+            return;
+        }
+    }
+
+    // --- NIVEL 3: mover mira y disparar ---
+    if (ui->graphicsView->scene() == nivel3) {
+        const int paso = 35; // velocidad de la mira (sube/baja esto)
+        int dx = 0;
+        int dy = 0;
+
+        switch (event->key()) {
+        case Qt::Key_Right:
+        case Qt::Key_D:
+            dx = +paso;
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_A:
+            dx = -paso;
+            break;
+        case Qt::Key_Up:
+        case Qt::Key_W:
+            dy = -paso;
+            break;
+        case Qt::Key_Down:
+        case Qt::Key_S:
+            dy = +paso;
+            break;
+        case Qt::Key_Space:
+            if (nivel3) {
+                nivel3->disparar();
+                event->accept();
+                return;
+            }
+            break;
+        default:
+            break;
+        }
+
+        if (dx != 0 || dy != 0) {
+            nivel3->moverMira(dx, dy);
+            event->accept();
+            return;
         }
     }
     QMainWindow::keyPressEvent(event);

@@ -1,12 +1,13 @@
 #include "enemigo.h"
 #include "obstaculo.h"
 #include "jugador.h"
+
 #include <QRandomGenerator>
 #include <QGraphicsScene>
 #include <QtMath>
 #include <QDebug>
 
-Enemigo::Enemigo(QGraphicsItem *parent)
+Enemigo::Enemigo(TipoSprite tipo, QGraphicsItem *parent)
     : Personaje(parent)
     , m_timerMovimiento(new QTimer(this))
     , m_timerDireccion(new QTimer(this))
@@ -15,11 +16,15 @@ Enemigo::Enemigo(QGraphicsItem *parent)
     , m_frameActual(0)
     , m_tiempoAcumulado(0.0)
     , m_tiempoPorFrame(0.08)
+    , m_tipoSprite(tipo)
     , m_objetivo(nullptr)
     , m_enPersecucion(false)
-    , m_radioDeteccion(200.0)        // distancia “x” para empezar a perseguir
-    , m_tiempoPersecucionMax(3.5)    // segundos persiguiendo
+    , m_radioDeteccion(200.0)
+    , m_tiempoPersecucionMax(3.5)
     , m_tiempoPersecucionAcumulado(0.0)
+    , m_movimientoDescendente(false)
+    , m_yMaxDescendente(0.0)
+    , m_velocidadDescendente(0.0)
 {
     cargarSprites();
 
@@ -27,13 +32,14 @@ Enemigo::Enemigo(QGraphicsItem *parent)
         setPixmap(m_framesAbajo.first());
     }
 
+    // Timer de movimiento (~60 FPS)
     m_timerMovimiento->setInterval(16);
     connect(m_timerMovimiento, &QTimer::timeout,
             this,              &Enemigo::actualizarPaso);
     m_timerMovimiento->start();
 
-    // movimiento menos aleatorio: cambio de dirección cada 2 s
-    m_timerDireccion->setInterval(2000);
+    // Cambio aleatorio de dirección (solo para soldados)
+    m_timerDireccion->setInterval(1500);
     connect(m_timerDireccion, &QTimer::timeout,
             this,             &Enemigo::cambiarDireccionAleatoria);
     m_timerDireccion->start();
@@ -41,6 +47,26 @@ Enemigo::Enemigo(QGraphicsItem *parent)
     cambiarDireccionAleatoria();
 }
 
+void Enemigo::setObjetivo(QGraphicsItem *objetivo)
+{
+    m_objetivo = objetivo;
+}
+
+void Enemigo::setRadioDeteccion(qreal radio)
+{
+    m_radioDeteccion = radio;
+}
+
+void Enemigo::configurarMovimientoDescendente(qreal yMax, qreal velocidadY)
+{
+    m_movimientoDescendente = true;
+    m_yMaxDescendente       = yMax;
+    m_velocidadDescendente  = velocidadY;
+
+    // Solo se mueve hacia abajo, sin aceleración
+    setVelocidadInicial(QPointF(0.0, m_velocidadDescendente));
+    setAceleracion(QPointF(0.0, 0.0));
+}
 
 void Enemigo::cargarSprites()
 {
@@ -49,41 +75,90 @@ void Enemigo::cargarSprites()
     m_framesArriba.clear();
     m_framesAbajo.clear();
 
-    auto cargar = [](QVector<QPixmap> &dest,const QString &carpeta,int numFrames)
-    {
-        dest.reserve(numFrames);
-        for (int i = 1; i <= numFrames; ++i) {
-            QString ruta = QString(":/Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/%1/mov%2.png")
-            .arg(carpeta)
-                .arg(i);
+    if (m_tipoSprite == Soldado) {
+        // ===== SOLDADOS NIVEL 1 (como antes) =====
+        auto cargar = [this](QVector<QPixmap> &dest,const QString &carpeta,int numFrames)
+        {
+            dest.reserve(numFrames);
+            for (int i = 1; i <= numFrames; ++i) {
+                QString ruta = QString(":/Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/%1/mov%2.png")
+                .arg(carpeta)
+                    .arg(i);
+                QPixmap frame(ruta);
+                if (!frame.isNull()) {
+                    dest.push_back(frame);
+                } else {
+                    qWarning() << "No se pudo cargar sprite de soldado:" << ruta;
+                }
+            }
+        };
+
+        const int framesPorDireccion = 8;
+
+        cargar(m_framesDer,    "mov_der",      framesPorDireccion);
+        cargar(m_framesIzq,    "mov_izq",      framesPorDireccion);
+        cargar(m_framesAbajo,  "mov_abajo",    framesPorDireccion);
+        cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
+    }
+    else if (m_tipoSprite == AlienNivel3) {
+        // ===== ALIEN NIVEL 3 =====
+        // SOLO los 4 sprites de la fila 2 (movimiento hacia abajo)
+        QVector<QString> rutas = {
+            ":/Sprites/SpritesNivel3/marciano/fila2/mov1.png",
+            ":/Sprites/SpritesNivel3/marciano/fila2/mov2.png",
+            ":/Sprites/SpritesNivel3/marciano/fila2/mov3.png",
+            ":/Sprites/SpritesNivel3/marciano/fila2/mov4.png"
+        };
+
+        for (const QString &ruta : rutas) {
             QPixmap frame(ruta);
             if (!frame.isNull()) {
-                dest.push_back(frame);
+                m_framesAbajo.push_back(frame);
             } else {
-                qWarning() << "No se pudo cargar sprite:" << ruta;
+                qWarning() << "No se pudo cargar sprite de alien:" << ruta;
             }
         }
-    };
 
-    const int framesPorDireccion = 8;
-
-    cargar(m_framesDer,    "mov_der",      framesPorDireccion);
-    cargar(m_framesIzq,    "mov_izq",      framesPorDireccion);
-    cargar(m_framesAbajo,  "mov_abajo",    framesPorDireccion);
-
-    cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
+        // Reutilizamos la animación de "abajo" para todas las direcciones,
+        // pero en el nivel 3 siempre forzaremos la dirección a Abajo.
+        m_framesDer    = m_framesAbajo;
+        m_framesIzq    = m_framesAbajo;
+        m_framesArriba = m_framesAbajo;
+    }
 }
-
 
 void Enemigo::actualizarPaso()
 {
     if (!scene())
         return;
 
-    qreal dt = m_timerMovimiento->interval() / 1000.0;
+    const qreal dt = m_timerMovimiento->interval() / 1000.0;
+    const QPointF posAnterior = pos();
 
-    QPointF posAnterior = pos();
+    // ==============================
+    // MODO SOLO DESCENDENTE (ALIENS)
+    // ==============================
+    if (m_movimientoDescendente) {
+        // Avanza según la velocidad actual
+        actualizarMovimiento(dt);
 
+        QPointF p = pos();
+        // Si se pasa del límite en Y, lo detenemos
+        if (p.y() > m_yMaxDescendente) {
+            p.setY(m_yMaxDescendente);
+            setPos(p);
+            setVelocidadInicial(QPointF(0.0, 0.0));
+        }
+
+        // Animación: siempre "mirando hacia abajo"
+        m_direccionActual = Abajo;
+        actualizarAnimacion(dt);
+        return; // No persecución ni colisiones complejas
+    }
+
+    // ==============================
+    // COMPORTAMIENTO NORMAL (SOLDADOS)
+    // ==============================
     actualizarEstadoPersecucion(dt);
 
     actualizarMovimiento(dt);
@@ -91,14 +166,14 @@ void Enemigo::actualizarPaso()
     corregirLimites();
     manejarColisiones(posAnterior);
 
-    if (qFuzzyIsNull(m_velocidad.x()) && qFuzzyIsNull(m_velocidad.y())) {
+    // Si no se mueve, no actualizamos animación
+    if (qFuzzyIsNull(m_velocidad.x()) && qFuzzyIsNull(m_velocidad.y()))
         return;
-    }
 
     if (qAbs(m_velocidad.x()) > qAbs(m_velocidad.y())) {
         m_direccionActual = (m_velocidad.x() > 0.0) ? Derecha : Izquierda;
     } else {
-        m_direccionActual = (m_velocidad.y() > 0.0) ? Abajo : Arriba;
+        m_direccionActual = (m_velocidad.y() > 0.0) ? Abajo  : Arriba;
     }
 
     actualizarAnimacion(dt);
@@ -106,27 +181,23 @@ void Enemigo::actualizarPaso()
 
 void Enemigo::actualizarEstadoPersecucion(qreal dt)
 {
-    if (!m_objetivo)
+    if (!m_objetivo || m_movimientoDescendente)
         return;
 
     QPointF diff = m_objetivo->pos() - pos();
-    qreal distancia = qSqrt(diff.x() * diff.x() + diff.y() * diff.y());
+    const qreal distancia = qSqrt(diff.x() * diff.x() + diff.y() * diff.y());
 
     if (!m_enPersecucion) {
         if (distancia <= m_radioDeteccion) {
-            // empieza la persecución
             m_enPersecucion = true;
             m_tiempoPersecucionAcumulado = 0.0;
         } else {
-            // sigue patrullando normal
             return;
         }
     }
 
-    // ya está en persecución
     m_tiempoPersecucionAcumulado += dt;
     if (m_tiempoPersecucionAcumulado > m_tiempoPersecucionMax) {
-        // se cansa de perseguir
         m_enPersecucion = false;
         m_tiempoPersecucionAcumulado = 0.0;
         cambiarDireccionAleatoria();
@@ -141,16 +212,15 @@ void Enemigo::actualizarEstadoPersecucion(qreal dt)
     }
 }
 
-
 void Enemigo::corregirLimites()
 {
     if (!scene())
         return;
 
-    QRectF limites    = scene()->sceneRect();
-    QRectF rectLocal  = boundingRect();
-    QPointF p         = pos();
-    bool chocoBorde   = false;
+    QRectF limites   = scene()->sceneRect();
+    QRectF rectLocal = boundingRect();
+    QPointF p        = pos();
+    bool chocoBorde  = false;
 
     if (p.x() < limites.left()) {
         p.setX(limites.left());
@@ -172,6 +242,39 @@ void Enemigo::corregirLimites()
     if (chocoBorde) {
         setPos(p);
         cambiarDireccionAleatoria();
+    }
+}
+
+void Enemigo::manejarColisiones(const QPointF &posAnterior)
+{
+    if (!scene())
+        return;
+
+    const auto colisiones = collidingItems();
+    for (QGraphicsItem *item : colisiones) {
+        if (dynamic_cast<Obstaculo*>(item)) {
+            Direccion dirPrev = m_direccionActual;
+
+            setPos(posAnterior);
+
+            QPointF p = pos();
+            switch (dirPrev) {
+            case Derecha:   p.rx() -= 2.0; break;
+            case Izquierda: p.rx() += 2.0; break;
+            case Arriba:    p.ry() += 2.0; break;
+            case Abajo:     p.ry() -= 2.0; break;
+            }
+
+            setPos(p);
+            corregirLimites();
+
+            cambiarDireccionAleatoria();
+            break;
+        }
+        else if (dynamic_cast<Jugador*>(item)) {
+            emit jugadorAlcanzado();
+            break;
+        }
     }
 }
 
@@ -198,10 +301,12 @@ void Enemigo::actualizarAnimacion(qreal dt)
     setPixmap(lista->at(m_frameActual));
 }
 
-
 void Enemigo::cambiarDireccionAleatoria()
 {
-    if (m_enPersecucion)
+    if (m_movimientoDescendente)
+        return;
+
+    if (!scene())
         return;
 
     int dir = QRandomGenerator::global()->bounded(4);
@@ -228,45 +333,4 @@ void Enemigo::cambiarDireccionAleatoria()
 
     setAceleracion(QPointF(0.0, 0.0));
     m_frameActual = 0;
-}
-
-void Enemigo::manejarColisiones(const QPointF &posAnterior)
-{
-    if (!scene())
-        return;
-
-    const auto colisiones = collidingItems();
-    for (QGraphicsItem *item : colisiones) {
-
-        if (dynamic_cast<Obstaculo*>(item)) {
-
-            Direccion dirPrev = m_direccionActual;
-
-            setPos(posAnterior);
-
-            QPointF p = pos();
-            switch (dirPrev) {
-            case Derecha:   p.rx() -= 2.0; break;
-            case Izquierda: p.rx() += 2.0; break;
-            case Arriba:    p.ry() += 2.0; break;
-            case Abajo:     p.ry() -= 2.0; break;
-            }
-
-            setPos(p);
-            corregirLimites();
-
-            cambiarDireccionAleatoria();
-
-            break;
-        }
-        else if (dynamic_cast<Jugador*>(item)) {
-            emit jugadorAlcanzado();
-            break;
-        }
-    }
-}
-
-void Enemigo::setObjetivo(Jugador *jugador)
-{
-    m_objetivo = jugador;
 }
