@@ -208,7 +208,7 @@ void Nivel::iniciar()
     // Timer meteoritos: va creando meteoritos cada cierto tiempo
     if (!m_timerMeteoritos) {
         m_timerMeteoritos = new QTimer(this);
-        m_timerMeteoritos->setInterval(1500); // cada 700 ms cae uno nuevo
+        m_timerMeteoritos->setInterval(1500); // cada 1.5 s cae uno nuevo
         connect(m_timerMeteoritos, &QTimer::timeout,
                 this, &Nivel::crearMeteorito);
     }
@@ -258,19 +258,6 @@ void Nivel::generarObstaculosAleatorios()
     if (!m_nave)
         return;
 
-    // Rutas de sprites
-    QStringList spritesObstaculos = {
-        ":/Sprites/SpritesNivel2/Obstaculos/Obs1.png",
-        ":/Sprites/SpritesNivel2/Obstaculos/Obs2.png",
-        ":/Sprites/SpritesNivel2/Obstaculos/Obs3.png",
-        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
-        ":/Sprites/SpritesNivel2/Obstaculos/Obs5.png"
-    };
-
-    QStringList spritesCohetes = {
-        ":/Sprites/SpritesNivel2/Cohete/Coh1.png"
-    };
-
     QRectF limites = sceneRect();
 
     // Que empiecen pronto y haya muchos
@@ -279,12 +266,13 @@ void Nivel::generarObstaculosAleatorios()
     if (xInicio >= xFinal)
         return;
 
-    // Usamos TODA la altura de la escena (sin franjas seguras)
+    // Usamos TODA la altura de la escena
     const qreal yMin = limites.top();
     const qreal yMax = limites.bottom();
 
-    const qreal DISTANCIA_MINIMA = 80.0;  // separación mínima entre obstáculos
-    const int   NUM_OBSTACULOS   = 70;    // cantidad
+    const qreal DISTANCIA_MINIMA   = 80.0;  // separación mínima entre obstáculos
+    const int   NUM_OBSTACULOS     = 80;    // obstáculos generales
+    const int   NUM_OBSTACULOS_BANDA = 40;  // extra en bandas superior/inferior
 
     // Rangos ENTEROS para QRandomGenerator::bounded(int,int)
     const int xMinInt = static_cast<int>(xInicio);
@@ -295,18 +283,36 @@ void Nivel::generarObstaculosAleatorios()
     if (xMaxInt <= xMinInt || yMaxInt <= yMinInt)
         return;
 
-    for (int i = 0; i < NUM_OBSTACULOS; ++i) {
+    // Rutas de sprites
+    // Lista general: repetimos Obs4 para que siga saliendo bastante
+    QStringList spritesObstaculos = {
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs1.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs2.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs3.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs4.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs5.png"
+    };
 
-        bool esCohete = (QRandomGenerator::global()->bounded(4) == 0); // 1 de cada 4
+    // Lista especial para las bandas (sin Obs4, para que veas más de los otros)
+    QStringList spritesBanda = {
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs1.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs2.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs3.png",
+        ":/Sprites/SpritesNivel2/Obstaculos/Obs5.png"
+    };
 
-        QString rutaSprite;
-        if (esCohete) {
-            rutaSprite = spritesCohetes.at(0);
-        } else {
-            int idx = QRandomGenerator::global()->bounded(spritesObstaculos.size());
-            rutaSprite = spritesObstaculos.at(idx);
-        }
+    QStringList spritesCohetes = {
+        ":/Sprites/SpritesNivel2/Cohete/Coh1.png"
+    };
 
+    auto colocarObstaculo = [&](const QString &rutaSprite,
+                                int xMinLocal, int xMaxLocal,
+                                int yMinLocal, int yMaxLocal)
+    {
         Obstaculo *ob = new Obstaculo(rutaSprite);
         QRectF rectLocal = ob->boundingRect();
 
@@ -314,14 +320,14 @@ void Nivel::generarObstaculosAleatorios()
 
         for (int intento = 0; intento < 50 && !colocado; ++intento) {
 
-            int xMaxForObst = xMaxInt - static_cast<int>(rectLocal.width());
-            int yMaxForObst = yMaxInt - static_cast<int>(rectLocal.height());
+            int xMaxForObst = xMaxLocal - static_cast<int>(rectLocal.width());
+            int yMaxForObst = yMaxLocal - static_cast<int>(rectLocal.height());
 
-            if (xMaxForObst <= xMinInt || yMaxForObst <= yMinInt)
+            if (xMaxForObst <= xMinLocal || yMaxForObst <= yMinLocal)
                 break;
 
-            int randXInt = QRandomGenerator::global()->bounded(xMinInt, xMaxForObst);
-            int randYInt = QRandomGenerator::global()->bounded(yMinInt, yMaxForObst);
+            int randXInt = QRandomGenerator::global()->bounded(xMinLocal, xMaxForObst);
+            int randYInt = QRandomGenerator::global()->bounded(yMinLocal, yMaxForObst);
 
             qreal x = static_cast<qreal>(randXInt);
             qreal y = static_cast<qreal>(randYInt);
@@ -356,8 +362,54 @@ void Nivel::generarObstaculosAleatorios()
         if (!colocado) {
             delete ob;
         }
+    };
+
+    // 1) Obstáculos generales repartidos por toda la altura
+    for (int i = 0; i < NUM_OBSTACULOS; ++i) {
+
+        bool esCohete = (QRandomGenerator::global()->bounded(5) == 0); // 1 de cada 5
+
+        QString rutaSprite;
+        if (esCohete) {
+            rutaSprite = spritesCohetes.at(0);
+        } else {
+            int idx = QRandomGenerator::global()->bounded(spritesObstaculos.size());
+            rutaSprite = spritesObstaculos.at(idx);
+        }
+
+        colocarObstaculo(rutaSprite, xMinInt, xMaxInt, yMinInt, yMaxInt);
+    }
+
+    // 2) Obstáculos extra en bandas superior e inferior
+    //    (solo Obs1,2,3,5 para que se note que son “otros obs”)
+    const qreal ALTURA_BANDA = (yMax - yMin) * 0.22;  // ~22% arriba y abajo
+
+    int topMinInt    = yMinInt;
+    int topMaxInt    = yMinInt + static_cast<int>(ALTURA_BANDA);
+    int bottomMaxInt = yMaxInt;
+    int bottomMinInt = yMaxInt - static_cast<int>(ALTURA_BANDA);
+
+    // Comprobaciones básicas
+    if (topMaxInt > yMaxInt)     topMaxInt = yMaxInt;
+    if (bottomMinInt < yMinInt) bottomMinInt = yMinInt;
+
+    for (int i = 0; i < NUM_OBSTACULOS_BANDA; ++i) {
+
+        int idx = QRandomGenerator::global()->bounded(spritesBanda.size());
+        QString rutaSprite = spritesBanda.at(idx);
+
+        // Decidimos si va a la banda superior o a la inferior
+        bool enArriba = (QRandomGenerator::global()->bounded(2) == 0);
+
+        if (enArriba && topMaxInt > topMinInt) {
+            colocarObstaculo(rutaSprite, xMinInt, xMaxInt, topMinInt, topMaxInt);
+        } else if (!enArriba && bottomMaxInt > bottomMinInt) {
+            colocarObstaculo(rutaSprite, xMinInt, xMaxInt, bottomMinInt, bottomMaxInt);
+        }
     }
 }
+
+
 
 // ───────── Meteoritos: se lanzan en parábola desde la esquina superior derecha visible ─────────
 void Nivel::crearMeteorito()
@@ -570,4 +622,5 @@ void Nivel::comprobarFinDeNivel()
         emit nivelCompletado(m_numeroNivel);
     }
 }
+
 
