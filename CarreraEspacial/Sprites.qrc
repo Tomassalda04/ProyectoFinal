@@ -146,5 +146,9 @@
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov14.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov15.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/mov_izq/mov16.png</file>
+        <file>Sprites/SpritesNivel3/marciano/fila2/mov1.png</file>
+        <file>Sprites/SpritesNivel3/marciano/fila2/mov2.png</file>
+        <file>Sprites/SpritesNivel3/marciano/fila2/mov3.png</file>
+        <file>Sprites/SpritesNivel3/marciano/fila2/mov4.png</file>
     </qresource>
 </RCC>
