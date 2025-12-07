@@ -13,16 +13,14 @@ class Enemigo : public Personaje
     Q_OBJECT
 
 public:
-    enum TipoSprite {
-        Soldado,
-        AlienNivel3
-    };
+    enum TipoSprite {Soldado, AlienNivel3};
 
     explicit Enemigo(TipoSprite tipo = Soldado, QGraphicsItem *parent = nullptr);
 
     void setObjetivo(QGraphicsItem *objetivo);
     void setRadioDeteccion(qreal radio);
 
+    // los aliens del nivel 3 solo bajan en Y
     void configurarMovimientoDescendente(qreal yMax, qreal velocidadY);
 
 signals:
@@ -33,12 +31,7 @@ private:
     QTimer *m_timerDireccion;
     qreal   m_velocidadBase;
 
-    enum Direccion {
-        Derecha,
-        Izquierda,
-        Arriba,
-        Abajo
-    };
+    enum Direccion {Derecha, Izquierda, Arriba, Abajo};
 
     Direccion m_direccionActual;
     int       m_frameActual;
@@ -57,6 +50,7 @@ private:
     qreal          m_tiempoPersecucionMax;
     qreal          m_tiempoPersecucionAcumulado;
 
+    // Modo de movimiento hacia abajo, aliens nivel 3
     bool  m_movimientoDescendente;
     qreal m_yMaxDescendente;
     qreal m_velocidadDescendente;
@@ -72,5 +66,4 @@ private slots:
     void cambiarDireccionAleatoria();
 };
 
-#endif // ENEMIGO_H
-
+#endif

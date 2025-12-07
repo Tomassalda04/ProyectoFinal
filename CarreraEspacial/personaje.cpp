@@ -22,10 +22,8 @@ void Personaje::actualizarMovimiento(qreal dt)
 {
     QPointF p = pos();
 
-    QPointF desplazamiento(
-        m_velocidad.x() * dt + 0.5 * m_aceleracion.x() * dt * dt,
-        m_velocidad.y() * dt + 0.5 * m_aceleracion.y() * dt * dt
-        );
+    QPointF desplazamiento(m_velocidad.x() * dt + 0.5 * m_aceleracion.x() * dt * dt,
+                           m_velocidad.y() * dt + 0.5 * m_aceleracion.y() * dt * dt);
 
     p += desplazamiento;
 
@@ -36,3 +34,4 @@ void Personaje::actualizarMovimiento(qreal dt)
     // Aplicar nueva posición
     setPos(p);
 }
+

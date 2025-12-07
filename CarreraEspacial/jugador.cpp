@@ -26,7 +26,7 @@ Jugador::Jugador(QGraphicsItem *parent)
     setFocus();
 
     m_timerMovimiento->setInterval(16);
-    connect(m_timerMovimiento, &QTimer::timeout,this, &Jugador::actualizarPaso);
+    connect(m_timerMovimiento, &QTimer::timeout, this, &Jugador::actualizarPaso);
     m_timerMovimiento->start();
 }
 
@@ -41,10 +41,9 @@ void Jugador::cargarSprites()
     {
         dest.reserve(numFrames);
         for (int i = 1; i <= numFrames; ++i) {
-
             QString ruta = QString(":/Sprites/SpritesNivel1/Sprites_mov_soldados_aliado/%1/mov%2.png")
-                               .arg(carpeta)
-                               .arg(i);
+            .arg(carpeta)
+                .arg(i);
 
             QPixmap frame(ruta);
             if (!frame.isNull()) {
@@ -62,20 +61,18 @@ void Jugador::cargarSprites()
     cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
 }
 
-
 void Jugador::actualizarPaso()
 {
     if (!scene())
         return;
     if (!hasFocus())
         setFocus();
-    qreal dt = m_timerMovimiento->interval() / 1000.0;
+
+    qreal   dt          = m_timerMovimiento->interval() / 1000.0;
     QPointF posAnterior = pos();
 
     actualizarMovimiento(dt);
-
     corregirLimites();
-
     manejarColisiones(posAnterior);
 
     if (m_direccionActual != Quieto &&
@@ -123,7 +120,6 @@ void Jugador::manejarColisiones(const QPointF &posAnterior)
         }
     }
 }
-
 
 void Jugador::actualizarAnimacion(qreal dt)
 {

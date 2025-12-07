@@ -1,12 +1,16 @@
+release/NaveEspacial.o
 release/main.o
 release/mainwindow.o
+release/nivel2.o
 release/personaje.o
 release/jugador.o
 release/enemigo.o
 release/obstaculo.o
 release/nivel.o
 release/qrc_Sprites.o
+release/moc_NaveEspacial.o
 release/moc_mainwindow.o
+release/moc_nivel2.o
 release/moc_personaje.o
 release/moc_jugador.o
 release/moc_enemigo.o

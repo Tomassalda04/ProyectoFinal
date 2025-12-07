@@ -25,13 +25,7 @@ private:
     QTimer *m_timerMovimiento;
     qreal   m_velocidadBase;
 
-    enum Direccion {
-        Derecha,
-        Izquierda,
-        Arriba,
-        Abajo,
-        Quieto
-    };
+    enum Direccion {Derecha, Izquierda, Arriba, Abajo, Quieto};
 
     Direccion m_direccionActual;
     int       m_frameActual;
@@ -52,4 +46,4 @@ private slots:
     void actualizarPaso();
 };
 
-#endif // JUGADOR_H
+#endif

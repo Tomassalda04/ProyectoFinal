@@ -16,7 +16,6 @@ protected:
 public:
     explicit Personaje(QGraphicsItem *parent = nullptr);
 
-
     void setVelocidadInicial(const QPointF &v0);
     void setAceleracion(const QPointF &a);
 
@@ -30,4 +29,6 @@ public:
     }
 };
 
-#endif // PERSONAJE_H
+#endif
+
+
