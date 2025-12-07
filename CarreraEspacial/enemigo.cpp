@@ -32,13 +32,13 @@ Enemigo::Enemigo(TipoSprite tipo, QGraphicsItem *parent)
         setPixmap(m_framesAbajo.first());
     }
 
-    // Timer de movimiento (~60 FPS)
+    // Timer de movimiento, ~60 FPS
     m_timerMovimiento->setInterval(16);
     connect(m_timerMovimiento, &QTimer::timeout,
             this,              &Enemigo::actualizarPaso);
     m_timerMovimiento->start();
 
-    // Cambio aleatorio de dirección (solo para soldados)
+    // Cambio aleatorio de dirección solo para los soldados
     m_timerDireccion->setInterval(1500);
     connect(m_timerDireccion, &QTimer::timeout,
             this,             &Enemigo::cambiarDireccionAleatoria);
@@ -76,7 +76,7 @@ void Enemigo::cargarSprites()
     m_framesAbajo.clear();
 
     if (m_tipoSprite == Soldado) {
-        // ===== SOLDADOS NIVEL 1 (como antes) =====
+        // Soldados nivel 1
         auto cargar = [this](QVector<QPixmap> &dest,const QString &carpeta,int numFrames)
         {
             dest.reserve(numFrames);
@@ -101,8 +101,8 @@ void Enemigo::cargarSprites()
         cargar(m_framesArriba, "mov_adelante", framesPorDireccion);
     }
     else if (m_tipoSprite == AlienNivel3) {
-        // ===== ALIEN NIVEL 3 =====
-        // SOLO los 4 sprites de la fila 2 (movimiento hacia abajo)
+        // Alien nivel 3
+        // Solo los 4 sprites de la fila 2 (movimiento hacia abajo)
         QVector<QString> rutas = {
             ":/Sprites/SpritesNivel3/marciano/fila2/mov1.png",
             ":/Sprites/SpritesNivel3/marciano/fila2/mov2.png",
@@ -119,7 +119,7 @@ void Enemigo::cargarSprites()
             }
         }
 
-        // Reutilizamos la animación de "abajo" para todas las direcciones,
+        // Reutilizamos la animación de abajo para todas las direcciones,
         // pero en el nivel 3 siempre forzaremos la dirección a Abajo.
         m_framesDer    = m_framesAbajo;
         m_framesIzq    = m_framesAbajo;
@@ -135,30 +135,26 @@ void Enemigo::actualizarPaso()
     const qreal dt = m_timerMovimiento->interval() / 1000.0;
     const QPointF posAnterior = pos();
 
-    // ==============================
-    // MODO SOLO DESCENDENTE (ALIENS)
-    // ==============================
+    // modo solo descendente (aliens)
     if (m_movimientoDescendente) {
         // Avanza según la velocidad actual
         actualizarMovimiento(dt);
 
         QPointF p = pos();
-        // Si se pasa del límite en Y, lo detenemos
+        // Si se pasa del límite en y lo detenemos
         if (p.y() > m_yMaxDescendente) {
             p.setY(m_yMaxDescendente);
             setPos(p);
             setVelocidadInicial(QPointF(0.0, 0.0));
         }
 
-        // Animación: siempre "mirando hacia abajo"
+        // Animación siempre mirando hacia abajo
         m_direccionActual = Abajo;
         actualizarAnimacion(dt);
-        return; // No persecución ni colisiones complejas
+        return; // No hay persecución ni colisiones complejas
     }
 
-    // ==============================
-    // COMPORTAMIENTO NORMAL (SOLDADOS)
-    // ==============================
+    // Comportamiento normal de los soldados
     actualizarEstadoPersecucion(dt);
 
     actualizarMovimiento(dt);

@@ -1,13 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>Sprites/SpritesNivel2/FondoNivel2.png</file>
-        <file>Sprites/SpritesNivel2/PC _ Computer - Klik &amp; Play - Graphic Libraries - Spaceships &amp; Planets.png</file>
-        <file>Sprites/SpritesNivel2/PC _ Computer - Out There Somewhere - Miscellaneous - Spaceship Minigame.png</file>
         <file>Sprites/SpritesNivel3/FondoNivel3.png</file>
         <file>Sprites/SpritesNivel3/MiraNivel3.png</file>
         <file>Sprites/SpritesNivel3/MS-DOS - Blake Stone_ Planet Strike - Enemies - Alien Protector.png</file>
         <file>Sprites/Fondo/fondo.png</file>
-        <file>Sprites/SpritesNivel2/nave1.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov1.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov2.png</file>
         <file>Sprites/SpritesNivel1/Sprites_mov_soldados_enemigos/mov_izq/mov3.png</file>
@@ -150,5 +147,22 @@
         <file>Sprites/SpritesNivel3/marciano/fila2/mov2.png</file>
         <file>Sprites/SpritesNivel3/marciano/fila2/mov3.png</file>
         <file>Sprites/SpritesNivel3/marciano/fila2/mov4.png</file>
+        <file>Sprites/Fondo/WIN.png</file>
+        <file>Sprites/Fondo/Game Over.png</file>
+        <file>Sprites/SpritesNivel2/Asteroide/ast4.png</file>
+        <file>Sprites/SpritesNivel2/Asteroide/ast5.png</file>
+        <file>Sprites/SpritesNivel2/Asteroide/ast6.png</file>
+        <file>Sprites/SpritesNivel2/Asteroide/ast7.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave1.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave2.png</file>
+        <file>Sprites/SpritesNivel2/Cohete/nave3.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs1.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs2.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs3.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs4.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs5.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs6.png</file>
+        <file>Sprites/SpritesNivel2/Obstaculos/Obs7.png</file>
+        <file>Sprites/musica.mp3</file>
     </qresource>
 </RCC>

@@ -6,6 +6,10 @@
 #include <QPixmap>
 #include <QTimer>
 #include <QDebug>
+#include <QRandomGenerator>
+
+static const char* RUTA_SPRITE_WIN = ":/Sprites/Fondo/WIN.png";
+static const char* RUTA_SPRITE_GAME_OVER = ":/Sprites/Fondo/Game Over.png";
 
 static const int VIEW_W = 1024;
 static const int VIEW_H = 572;
@@ -30,9 +34,7 @@ void Nivel::crearNivel1()
     setSceneRect(0,0,VIEW_W,VIEW_H);
 
     if (!fondo.isNull()) {
-        QPixmap fondoEscalado = fondo.scaled(VIEW_W,VIEW_H,
-                                             Qt::IgnoreAspectRatio,
-                                             Qt::SmoothTransformation);
+        QPixmap fondoEscalado = fondo.scaled(VIEW_W,VIEW_H, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         addPixmap(fondoEscalado)->setPos(0,0);
     }
 
@@ -80,36 +82,32 @@ void Nivel::crearNivel1()
     }
 
     m_cohetesRecolectados = 0;
-    m_cohetesTotales      = m_cohetes.size();
+    m_cohetesTotales = m_cohetes.size();
 
     m_jugador = new Jugador();
     addItem(m_jugador);
     m_jugador->setPos(500, 100);
     m_jugador->setFocus();
 
-    connect(m_jugador, &Jugador::coheteRecolectado,
-            this,      &Nivel::manejarCoheteRecolectado);
+    connect(m_jugador, &Jugador::coheteRecolectado, this, &Nivel::manejarCoheteRecolectado);
 
     m_enemigo = new Enemigo();
     addItem(m_enemigo);
     m_enemigo->setPos(100, 300);
     m_enemigo->setObjetivo(m_jugador);
-    connect(m_enemigo, &Enemigo::jugadorAlcanzado,
-            this,      &Nivel::onJugadorAtrapado);
+    connect(m_enemigo, &Enemigo::jugadorAlcanzado, this, &Nivel::onJugadorAtrapado);
 
     Enemigo *enemigo2 = new Enemigo();
     addItem(enemigo2);
     enemigo2->setPos(750, 320);
     enemigo2->setObjetivo(m_jugador);
-    connect(enemigo2, &Enemigo::jugadorAlcanzado,
-            this,      &Nivel::onJugadorAtrapado);
+    connect(enemigo2, &Enemigo::jugadorAlcanzado, this, &Nivel::onJugadorAtrapado);
 
     m_segundosRestantes = 40;
 
     if (!m_timerNivel) {
         m_timerNivel = new QTimer(this);
-        connect(m_timerNivel, &QTimer::timeout,
-                this,         &Nivel::actualizarCuentaAtras);
+        connect(m_timerNivel, &QTimer::timeout, this, &Nivel::actualizarCuentaAtras);
     }
     m_timerNivel->start(1000);
 
@@ -126,17 +124,13 @@ void Nivel::crearNivel1()
     }
 
     m_textoTiempo->setPlainText(QString("Tiempo: %1").arg(m_segundosRestantes));
-    m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2")
-                                     .arg(m_cohetesRecolectados)
-                                     .arg(m_cohetesTotales));
+    m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2").arg(m_cohetesRecolectados).arg(m_cohetesTotales));
 }
 
 void Nivel::crearNivel2()
 {
     QPixmap fondo(":/Sprites/SpritesNivel2/FondoNivel2.png");
-    QPixmap fondoEscalado = fondo.isNull()
-                                ? QPixmap(VIEW_W, VIEW_H)
-                                : fondo.scaledToHeight(VIEW_H, Qt::SmoothTransformation);
+    QPixmap fondoEscalado = fondo.isNull() ? QPixmap(VIEW_W, VIEW_H) : fondo.scaledToHeight(VIEW_H, Qt::SmoothTransformation);
 
     if (fondoEscalado.isNull()) {
         fondoEscalado = QPixmap(VIEW_W, VIEW_H);
@@ -146,24 +140,21 @@ void Nivel::crearNivel2()
     setSceneRect(0,0,fondoEscalado.width(),fondoEscalado.height());
     addPixmap(fondoEscalado)->setPos(0,0);
 
-    QPixmap spriteCohete(":/Sprites/SpritesNivel2/nave1.png");
+    QPixmap spriteCohete(":/Sprites/SpritesNivel2/Cohete/nave1.png");
     if (spriteCohete.isNull()) {
         spriteCohete = QPixmap(40,80);
         spriteCohete.fill(Qt::red);
     }
 
     int anchoDeseado = 80;
-    int altoDeseado  = 80;
+    int altoDeseado = 80;
 
-    spriteCohete = spriteCohete.scaled(anchoDeseado, altoDeseado,
-                                       Qt::KeepAspectRatio,
-                                       Qt::SmoothTransformation);
+    spriteCohete = spriteCohete.scaled(anchoDeseado, altoDeseado, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     m_cohete = addPixmap(spriteCohete);
 
     qreal xInicial = 100.0;
-    qreal yInicial = sceneRect().height()/2.0
-                     - m_cohete->boundingRect().height()/2.0;
+    qreal yInicial = sceneRect().height()/2.0 - m_cohete->boundingRect().height()/2.0;
 
     m_cohete->setPos(xInicial, yInicial);
 }
@@ -174,10 +165,15 @@ void Nivel::crearNivel3()
     setSceneRect(0,0,VIEW_W,VIEW_H);
 
     if (!fondo.isNull()) {
-        QPixmap fondoEscalado = fondo.scaled(VIEW_W,VIEW_H,
-                                             Qt::IgnoreAspectRatio,
-                                             Qt::SmoothTransformation);
+        QPixmap fondoEscalado = fondo.scaled(VIEW_W,VIEW_H, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         addPixmap(fondoEscalado)->setPos(0,0);
+    }
+
+    // Por si quedara algun mensaje de una partida anterior
+    if (m_mensajeOverlay) {
+        removeItem(m_mensajeOverlay);
+        delete m_mensajeOverlay;
+        m_mensajeOverlay = nullptr;
     }
 
     QPixmap spriteMira(":/Sprites/SpritesNivel3/MiraNivel3.png");
@@ -191,18 +187,18 @@ void Nivel::crearNivel3()
     }
 
     m_aliensNivel3.clear();
-    m_aliensEscapados    = 0;
-    m_aliensEscapadosMax = 5;
-    m_oleadaActual       = 0;
-    m_totalOleadasNivel3 = 5;
-    m_aliensPorOleada    = 3;
+    m_aliensEscapados          = 0;
+    m_aliensEscapadosMax       = 5;
+    m_oleadaActual             = 0;
+    m_totalOleadasNivel3       = 5;
+    m_aliensPorOleada          = 2;
+    m_esperandoSiguienteOleada = false;
 
     crearOleadaAliens();
 
     if (!m_timerAliensNivel3) {
         m_timerAliensNivel3 = new QTimer(this);
-        connect(m_timerAliensNivel3, &QTimer::timeout,
-                this,                &Nivel::actualizarAliensNivel3);
+        connect(m_timerAliensNivel3, &QTimer::timeout, this, &Nivel::actualizarAliensNivel3);
     }
     m_timerAliensNivel3->start(30);
 }
@@ -211,13 +207,15 @@ void Nivel::actualizarCuentaAtras()
 {
     --m_segundosRestantes;
 
-    if (m_textoTiempo)
+    if (m_textoTiempo) {
         m_textoTiempo->setPlainText(QString("Tiempo: %1").arg(m_segundosRestantes));
+    }
 
     if (m_segundosRestantes <= 0) {
-        if (m_timerNivel)
+        if (m_timerNivel) {
             m_timerNivel->stop();
-        emit nivelFallado(m_numeroNivel);
+        }
+        mostrarGameOverYEmitir();
     }
 }
 
@@ -235,23 +233,24 @@ void Nivel::manejarCoheteRecolectado(QGraphicsItem *cohete)
     ++m_cohetesRecolectados;
 
     if (m_textoCohetes) {
-        m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2")
-                                         .arg(m_cohetesRecolectados)
-                                         .arg(m_cohetesTotales));
+        m_textoCohetes->setPlainText(QString("Cohetes: %1 / %2").arg(m_cohetesRecolectados).arg(m_cohetesTotales));
     }
 
     if (m_cohetesRecolectados >= m_cohetesTotales) {
-        if (m_timerNivel)
+        if (m_timerNivel) {
             m_timerNivel->stop();
-        emit nivelCompletado(m_numeroNivel);
+        }
+        mostrarVictoriaYEmitir();
     }
 }
 
 void Nivel::onJugadorAtrapado()
 {
-    if (m_timerNivel)
+    if (m_timerNivel) {
         m_timerNivel->stop();
-    emit nivelFallado(m_numeroNivel);
+    }
+
+    mostrarGameOverYEmitir();
 }
 
 void Nivel::moverCohete(int dx,int dy)
@@ -318,15 +317,7 @@ void Nivel::disparar()
     if (!eliminoAlguno)
         return;
 
-    if (m_aliensNivel3.isEmpty()) {
-        if (m_oleadaActual >= m_totalOleadasNivel3) {
-            if (m_timerAliensNivel3)
-                m_timerAliensNivel3->stop();
-            emit nivelCompletado(m_numeroNivel);
-        } else {
-            crearOleadaAliens();
-        }
-    }
+    comprobarEstadoOleadasNivel3();
 }
 
 void Nivel::crearOleadaAliens()
@@ -336,22 +327,50 @@ void Nivel::crearOleadaAliens()
 
     ++m_oleadaActual;
 
-    const qreal margenX     = 100.0;
+    int aliensEnEstaOleada = m_aliensPorOleada + (m_oleadaActual - 1);
+
+    const qreal margenX = 60.0;
     const qreal anchoEscena = sceneRect().width();
-    qreal espacioX = 0.0;
+    const qreal yInicial = 280.0;
 
-    if (m_aliensPorOleada > 1)
-        espacioX = (anchoEscena - 2 * margenX) / (m_aliensPorOleada - 1);
+    QVector<qreal> posicionesX;
+    const qreal separacionMin = 80.0;
 
-    const qreal yInicial = 40.0;
-
-    for (int i = 0; i < m_aliensPorOleada; ++i) {
+    for (int i = 0; i < aliensEnEstaOleada; ++i) {
         Enemigo *alien = new Enemigo(Enemigo::AlienNivel3);
         addItem(alien);
 
-        const qreal x = (m_aliensPorOleada == 1)
-                            ? anchoEscena / 2.0
-                            : margenX + i * espacioX;
+        qreal anchoAlien = alien->boundingRect().width();
+        qreal minX = margenX;
+        qreal maxX = anchoEscena - anchoAlien - margenX;
+        if (maxX < minX)
+            maxX = minX;
+
+        double minXd = static_cast<double>(minX);
+        double maxXd = static_cast<double>(maxX);
+
+        qreal x = 0.0;
+        int intentos = 0;
+        bool valido = false;
+
+        while (!valido && intentos < 20) {
+            double t = QRandomGenerator::global()->generateDouble();
+            double randomX = minXd + t * (maxXd - minXd);
+            x = static_cast<qreal>(randomX);
+            valido = true;
+            for (qreal usado : posicionesX) {
+                qreal diff = x - usado;
+                if (diff < 0)
+                    diff = -diff;
+                if (diff < separacionMin) {
+                    valido = false;
+                    break;
+                }
+            }
+            ++intentos;
+        }
+
+        posicionesX.push_back(x);
 
         alien->setPos(x, yInicial);
 
@@ -390,17 +409,97 @@ void Nivel::actualizarAliensNivel3()
     if (m_aliensEscapados >= m_aliensEscapadosMax) {
         if (m_timerAliensNivel3)
             m_timerAliensNivel3->stop();
-        emit nivelFallado(m_numeroNivel);
+
+        mostrarGameOverYEmitir();
         return;
     }
 
-    if (m_aliensNivel3.isEmpty()) {
-        if (m_oleadaActual >= m_totalOleadasNivel3) {
-            if (m_timerAliensNivel3)
-                m_timerAliensNivel3->stop();
-            emit nivelCompletado(m_numeroNivel);
-        } else {
-            crearOleadaAliens();
+    comprobarEstadoOleadasNivel3();
+}
+
+void Nivel::mostrarVictoriaYEmitir()
+{
+    if (m_mensajeOverlay) {
+        removeItem(m_mensajeOverlay);
+        delete m_mensajeOverlay;
+        m_mensajeOverlay = nullptr;
+    }
+
+    QPixmap winPixmap(QString::fromUtf8(RUTA_SPRITE_WIN));
+    if (winPixmap.isNull()) {
+        winPixmap = QPixmap(300, 100);
+        winPixmap.fill(Qt::green);
+    }
+
+    m_mensajeOverlay = addPixmap(winPixmap);
+    if (m_mensajeOverlay) {
+        qreal x = sceneRect().center().x() - m_mensajeOverlay->boundingRect().width() / 2.0;
+        qreal y = sceneRect().center().y() - m_mensajeOverlay->boundingRect().height() / 2.0;
+        m_mensajeOverlay->setPos(x, y);
+        m_mensajeOverlay->setZValue(100);
+    }
+
+    QTimer::singleShot(3000, this, [this]() {
+        if (m_mensajeOverlay) {
+            removeItem(m_mensajeOverlay);
+            delete m_mensajeOverlay;
+            m_mensajeOverlay = nullptr;
         }
+        emit nivelCompletado(m_numeroNivel);
+    });
+}
+
+void Nivel::mostrarGameOverYEmitir()
+{
+    if (m_mensajeOverlay) {
+        removeItem(m_mensajeOverlay);
+        delete m_mensajeOverlay;
+        m_mensajeOverlay = nullptr;
+    }
+
+    QPixmap goPixmap(QString::fromUtf8(RUTA_SPRITE_GAME_OVER));
+    if (goPixmap.isNull()) {
+        goPixmap = QPixmap(300, 100);
+        goPixmap.fill(Qt::red);
+    }
+
+    m_mensajeOverlay = addPixmap(goPixmap);
+    if (m_mensajeOverlay) {
+        qreal x = sceneRect().center().x() - m_mensajeOverlay->boundingRect().width() / 2.0;
+        qreal y = sceneRect().center().y() - m_mensajeOverlay->boundingRect().height() / 2.0;
+        m_mensajeOverlay->setPos(x, y);
+        m_mensajeOverlay->setZValue(100);
+    }
+
+    QTimer::singleShot(3000, this, [this]() {
+        if (m_mensajeOverlay) {
+            removeItem(m_mensajeOverlay);
+            delete m_mensajeOverlay;
+            m_mensajeOverlay = nullptr;
+        }
+        emit nivelFallado(m_numeroNivel);
+    });
+}
+
+void Nivel::comprobarEstadoOleadasNivel3()
+{
+    if (!m_aliensNivel3.isEmpty())
+        return;
+
+    if (m_oleadaActual >= m_totalOleadasNivel3) {
+        if (m_timerAliensNivel3)
+            m_timerAliensNivel3->stop();
+
+        mostrarVictoriaYEmitir();
+    } else {
+        if (m_esperandoSiguienteOleada)
+            return;
+
+        m_esperandoSiguienteOleada = true;
+
+        QTimer::singleShot(2000, this, [this]() {
+            m_esperandoSiguienteOleada = false;
+            crearOleadaAliens();
+        });
     }
 }

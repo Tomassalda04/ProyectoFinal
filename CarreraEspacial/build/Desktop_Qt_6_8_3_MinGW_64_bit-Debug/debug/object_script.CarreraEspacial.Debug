@@ -1,12 +1,16 @@
+debug/NaveEspacial.o
 debug/main.o
 debug/mainwindow.o
+debug/nivel2.o
 debug/personaje.o
 debug/jugador.o
 debug/enemigo.o
 debug/obstaculo.o
 debug/nivel.o
 debug/qrc_Sprites.o
+debug/moc_NaveEspacial.o
 debug/moc_mainwindow.o
+debug/moc_nivel2.o
 debug/moc_personaje.o
 debug/moc_jugador.o
 debug/moc_enemigo.o
